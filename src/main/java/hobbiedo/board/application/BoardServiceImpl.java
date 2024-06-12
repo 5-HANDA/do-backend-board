@@ -39,7 +39,7 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	@Transactional
 	public void createPostWithImages(Long crewId, String uuid,
-			BoardUploadRequestDto boardUploadRequestDto) {
+		BoardUploadRequestDto boardUploadRequestDto) {
 
 		Board createdBoard = createPost(crewId, uuid, boardUploadRequestDto);
 
@@ -80,7 +80,7 @@ public class BoardServiceImpl implements BoardService {
 	public BoardDetailsResponseDto getPost(Long boardId) {
 
 		Board board = boardRepository.findById(boardId)
-				.orElseThrow(() -> new BoardExceptionHandler(GET_POST_NOT_FOUND));
+			.orElseThrow(() -> new BoardExceptionHandler(GET_POST_NOT_FOUND));
 
 		List<BoardImage> boardImages = boardImageRepository.findByBoardId(boardId);
 
@@ -90,19 +90,19 @@ public class BoardServiceImpl implements BoardService {
 		if (boardImages != null && !boardImages.isEmpty()) {
 
 			imageUrls = boardImages.stream()
-					.map(BoardImage::getImageUrl)
-					.toList();
+				.map(BoardImage::getImageUrl)
+				.toList();
 		}
 
 		return BoardDetailsResponseDto.builder()
-				.boardId(board.getId())
-				.content(board.getContent())
-				.writerUuid(board.getWriterUuid())
-				.pinned(board.isPinned())
-				.createdAt(board.getCreatedAt())
-				.updated(board.isUpdated())
-				.imageUrls(imageUrls)
-				.build();
+			.boardId(board.getId())
+			.content(board.getContent())
+			.writerUuid(board.getWriterUuid())
+			.pinned(board.isPinned())
+			.createdAt(board.getCreatedAt())
+			.updated(board.isUpdated())
+			.imageUrls(imageUrls)
+			.build();
 	}
 
 	/**
@@ -116,19 +116,62 @@ public class BoardServiceImpl implements BoardService {
 		List<Board> boards = boardRepository.findByCrewId(crewId);
 
 		return boards.stream()
-				.filter(board -> !board.isPinned()) // pinned 가 false 인 게시글만 포함
-				.sorted(Comparator.comparing(Board::getCreatedAt)
-						.reversed()) // 최신순으로 정렬
-				.map(board -> BoardResponseDto.builder()
-						.boardId(board.getId())
-						.pinned(board.isPinned())
-						.build())
-				.toList();
+			.filter(board -> !board.isPinned()) // pinned 가 false 인 게시글만 포함
+			.sorted(Comparator.comparing(Board::getCreatedAt)
+				.reversed()) // 최신순으로 정렬
+			.map(board -> BoardResponseDto.builder()
+				.boardId(board.getId())
+				.pinned(board.isPinned())
+				.build())
+			.toList();
+	}
+
+	/**
+	 * 게시글 수정
+	 * 이미지 url 리스트가 비어있을 경우 게시글만 수정
+	 * @param boardId
+	 * @param uuid
+	 * @param boardUpdateRequestDto
+	 */
+	@Override
+	@Transactional
+	public void updatePostWithImages(Long boardId, String uuid,
+		BoardUploadRequestDto boardUpdateRequestDto) {
+
+		// 게시글 수정
+		Board updateedBoard = updatePost(boardId, uuid, boardUpdateRequestDto);
+
+		// 이미지 url 리스트가 5개를 초과할 경우 예외 처리
+		List<String> imageUrls = boardUpdateRequestDto.getImageUrls();
+
+		if (imageUrls.size() > 5) {
+			throw new BoardExceptionHandler(CREATE_POST_IMAGE_SIZE_EXCEED);
+		}
+
+		// 기존 이미지가 있을 경우 삭제
+		boardImageRepository.deleteByBoardId(boardId);
+
+		// 새 이미지 추가
+		if (imageUrls != null && !imageUrls.isEmpty()) {
+
+			IntStream.range(0, imageUrls.size())
+				.forEach(i -> {
+					String imageUrl = imageUrls.get(i);
+
+					boardImageRepository.save(
+						BoardImage.builder()
+							.board(updateedBoard)
+							.imageUrl(imageUrl)
+							.orderIndex(i)
+							.build()
+					);
+				});
+		}
 	}
 
 	// 게시글 생성
 	private Board createPost(Long crewId, String uuid,
-			BoardUploadRequestDto boardUploadRequestDto) {
+		BoardUploadRequestDto boardUploadRequestDto) {
 
 		String content = boardUploadRequestDto.getContent();
 
@@ -139,11 +182,44 @@ public class BoardServiceImpl implements BoardService {
 		}
 
 		return boardRepository.save(
-				Board.builder()
-						.crewId(crewId)
-						.writerUuid(uuid)
-						.content(boardUploadRequestDto.getContent())
-						.build()
+			Board.builder()
+				.crewId(crewId)
+				.writerUuid(uuid)
+				.content(boardUploadRequestDto.getContent())
+				.build()
+		);
+	}
+
+	// 게시글 수정
+	private Board updatePost(Long boardId, String uuid,
+		BoardUploadRequestDto boardUpdateRequestDto) {
+
+		Board board = boardRepository.findById(boardId)
+			.orElseThrow(() -> new BoardExceptionHandler(GET_POST_NOT_FOUND));
+
+		// 작성자가 아닐 경우 예외 처리
+		if (!board.getWriterUuid().equals(uuid)) {
+			throw new BoardExceptionHandler(UPDATE_POST_NOT_WRITER);
+		}
+
+		// 업데이트할 게시글 내용을 가져온다.
+		String content = boardUpdateRequestDto.getContent();
+
+		// 게시글 내용이 비어있을 경우 예외 처리
+		if (content == null || content.trim().isEmpty()) {
+
+			throw new BoardExceptionHandler(CREATE_POST_CONTENT_EMPTY);
+		}
+
+		return boardRepository.save(
+			Board.builder()
+				.id(board.getId())
+				.content(boardUpdateRequestDto.getContent())
+				.writerUuid(board.getWriterUuid())
+				.crewId(board.getCrewId())
+				.isPinned(board.isPinned())
+				.isUpdated(true)
+				.build()
 		);
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,43 +37,60 @@ public class BoardController {
 	@PostMapping("/{crewId}/board/create-post")
 	@Operation(summary = "게시글 생성", description = "게시글을 생성합니다.")
 	public ApiResponse<Void> createPost(
-			@PathVariable("crewId") Long crewId,
-			@RequestHeader(name = "Uuid") String uuid,
-			@RequestBody BoardUploadRequestVo boardUploadRequestVo) {
+		@PathVariable("crewId") Long crewId,
+		@RequestHeader(name = "Uuid") String uuid,
+		@RequestBody BoardUploadRequestVo boardUploadRequestVo) {
 
 		BoardUploadRequestDto boardUploadRequestDto = BoardUploadRequestDto
-				.boardUploadVoToDto(boardUploadRequestVo);
+			.boardUploadVoToDto(boardUploadRequestVo);
 
 		boardService.createPostWithImages(crewId, uuid, boardUploadRequestDto);
 
 		return ApiResponse.onSuccess(
-				SuccessStatus.CREATE_POST_SUCCESS
+			SuccessStatus.CREATE_POST_SUCCESS
 		);
 	}
 
 	@GetMapping("{crewId}/board-list")
 	@Operation(summary = "게시글 목록 조회", description = "해당 소모임의 게시글 목록을 조회합니다.")
 	public ApiResponse<BoardListResponseVo> getPostList(
-			@PathVariable("crewId") Long crewId) {
+		@PathVariable("crewId") Long crewId) {
 
 		List<BoardResponseDto> boardListResponseDto = boardService.getPostList(crewId);
 
 		return ApiResponse.onSuccess(
-				SuccessStatus.GET_POST_LIST_SUCCESS,
-				BoardListResponseVo.boardListToVo(boardListResponseDto)
+			SuccessStatus.GET_POST_LIST_SUCCESS,
+			BoardListResponseVo.boardListToVo(boardListResponseDto)
 		);
 	}
 
 	@GetMapping("/board/{boardId}")
 	@Operation(summary = "게시글 조회", description = "게시글을 조회합니다.")
 	public ApiResponse<BoardDetailsResponseVo> getPost(
-			@PathVariable("boardId") Long boardId) {
+		@PathVariable("boardId") Long boardId) {
 
 		BoardDetailsResponseDto boardResponseDto = boardService.getPost(boardId);
 
 		return ApiResponse.onSuccess(
-				SuccessStatus.GET_POST_SUCCESS,
-				BoardDetailsResponseVo.boardDtoToDetailsVo(boardResponseDto)
+			SuccessStatus.GET_POST_SUCCESS,
+			BoardDetailsResponseVo.boardDtoToDetailsVo(boardResponseDto)
+		);
+	}
+
+	@PutMapping("/board/{boardId}/update-post")
+	@Operation(summary = "게시글 수정", description = "작성자가 게시글을 수정합니다.")
+	public ApiResponse<Void> updatePost(
+		@PathVariable("boardId") Long boardId,
+		@RequestHeader(name = "Uuid") String uuid,
+		@RequestBody BoardUploadRequestVo boardUploadRequestVo) {
+
+		BoardUploadRequestDto boardUpdateRequestDto = BoardUploadRequestDto
+			.boardUploadVoToDto(boardUploadRequestVo);
+
+		boardService.updatePostWithImages(boardId, uuid, boardUpdateRequestDto);
+
+		return ApiResponse.onSuccess(
+			SuccessStatus.UPDATE_POST_SUCCESS
 		);
 	}
 
