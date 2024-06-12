@@ -10,7 +10,14 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum SuccessStatus implements BaseCode {
-	EXAMPLE_EXCEPTION(HttpStatus.OK, "EXAMPLE200", "샘플 성공 메시지입니다.");
+	EXAMPLE_EXCEPTION(HttpStatus.OK, "EXAMPLE200", "샘플 성공 메시지입니다."),
+
+	// 게시글 생성 성공
+	CREATE_POST_SUCCESS(HttpStatus.OK, "200", "게시글 생성을 성공하였습니다."),
+	// 게시글 조회 성공
+	GET_POST_SUCCESS(HttpStatus.OK, "200", "게시글 조회를 성공하였습니다."),
+	// 게시글 목록 조회 성공
+	GET_POST_LIST_SUCCESS(HttpStatus.OK, "200", "게시글 목록 조회를 성공하였습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String status;
@@ -27,19 +34,19 @@ public enum SuccessStatus implements BaseCode {
 	@Override
 	public ReasonDto getReason() {
 		return ReasonDto
-			.builder()
-			.code(status)
-			.message(message)
-			.build();
+				.builder()
+				.code(status)
+				.message(message)
+				.build();
 	}
 
 	@Override
 	public ReasonDto getReasonHttpStatus() {
 		return ReasonDto
-			.builder()
-			.httpStatus(httpStatus)
-			.code(status)
-			.message(message)
-			.build();
+				.builder()
+				.httpStatus(httpStatus)
+				.code(status)
+				.message(message)
+				.build();
 	}
 }
