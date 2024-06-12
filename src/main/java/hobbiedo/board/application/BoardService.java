@@ -17,4 +17,6 @@ public interface BoardService {
 
 	void updatePostWithImages(Long boardId, String uuid,
 		BoardUploadRequestDto boardUpdateRequestDto);
+
+	void deletePost(Long boardId, String uuid);
 }

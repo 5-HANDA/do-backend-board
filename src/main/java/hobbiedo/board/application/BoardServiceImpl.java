@@ -169,6 +169,30 @@ public class BoardServiceImpl implements BoardService {
 		}
 	}
 
+	/**
+	 * 게시글 삭제
+	 * @param boardId
+	 * @param uuid
+	 */
+	@Override
+	@Transactional
+	public void deletePost(Long boardId, String uuid) {
+
+		Board board = boardRepository.findById(boardId)
+			.orElseThrow(() -> new BoardExceptionHandler(GET_POST_NOT_FOUND));
+
+		// 작성자가 아닐 경우 예외 처리
+		if (!board.getWriterUuid().equals(uuid)) {
+			throw new BoardExceptionHandler(DELETE_POST_NOT_WRITER);
+		}
+
+		// 게시글에 속한 이미지 삭제
+		boardImageRepository.deleteByBoardId(boardId);
+
+		// 게시글 삭제
+		boardRepository.deleteById(boardId);
+	}
+
 	// 게시글 생성
 	private Board createPost(Long crewId, String uuid,
 		BoardUploadRequestDto boardUploadRequestDto) {
