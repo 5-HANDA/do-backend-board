@@ -36,10 +36,15 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 
 		String content = commentUploadRequestDto.getContent();
 
-		// 댓글 내용이 비어있을 경우 예외 처리
+		Boolean isInCrew = commentUploadRequestDto.getIsInCrew();
+
+		// 댓글 내용이 비어있을 경우, isInCrew 가 비어있을 경우 예외 처리
 		if (content == null || content.trim().isEmpty()) {
 
 			throw new BoardExceptionHandler(CREATE_COMMENT_CONTENT_EMPTY);
+		} else if (isInCrew == null) {
+
+			throw new BoardExceptionHandler(CREATE_COMMENT_IS_IN_CREW_EMPTY);
 		}
 
 		// 게시글이 존재하지 않을 경우 예외 처리
@@ -50,6 +55,7 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 			.board(board)
 			.writerUuid(uuid)
 			.content(commentUploadRequestDto.getContent())
+			.isInCrew(commentUploadRequestDto.getIsInCrew())
 			.build();
 
 		commentRepository.save(comment);

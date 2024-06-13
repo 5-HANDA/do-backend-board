@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 public class CommentUploadRequestVo {
 
 	private String content;
-	// 소모임 회원 여부
-	//private Boolean isMember;
+	// 소모임 소속 여부
+	private Boolean isInCrew;
 
-	public CommentUploadRequestVo(String content/*, Boolean isInCrew*/) {
+	public CommentUploadRequestVo(String content, Boolean isInCrew) {
 		this.content = content;
-		//this.isInCrew = isInCrew;
+		this.isInCrew = isInCrew;
 	}
 }

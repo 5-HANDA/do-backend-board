@@ -36,15 +36,15 @@ public class Comment {
 	private String content;
 
 	// 소모임 회원 여부
-	// @Column(nullable = false)
-	// private Boolean isInCrew;
+	@Column(nullable = false)
+	private Boolean isInCrew;
 
 	@Builder
-	public Comment(Long id, Board board, String writerUuid, String content/*, boolean isMember*/) {
+	public Comment(Long id, Board board, String writerUuid, String content, boolean isInCrew) {
 		this.id = id;
 		this.board = board;
 		this.writerUuid = writerUuid;
 		this.content = content;
-		//this.isInCrew = isInCrew;
+		this.isInCrew = isInCrew;
 	}
 }

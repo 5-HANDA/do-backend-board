@@ -43,4 +43,16 @@ public class BoardInteractionController {
 			SuccessStatus.CREATE_COMMENT_SUCCESS
 		);
 	}
+
+	// 게시글 댓글 리스트 조회
+	// @GetMapping("/{boardId}/comment")
+	// @Operation(summary = "게시글 댓글 조회", description = "게시글에 등록된 댓글들을 조회합니다.")
+	// public ApiResponse<CommentListResponseVo> getCommentList(
+	// 	@PathVariable("boardId") Long boardId,
+	// 	@PageableDefault(size = 20, sort = "id") Pageable page) {
+	//
+	// 	return ApiResponse.onSuccess(
+	// 		SuccessStatus.GET_COMMENT_LIST_SUCCESS
+	// 	);
+	// }
 }

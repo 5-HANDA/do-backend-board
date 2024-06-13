@@ -23,7 +23,10 @@ public enum ErrorStatus implements BaseErrorCode {
 	UPDATE_POST_NOT_WRITER(HttpStatus.FORBIDDEN, "BOARD405", "게시글 작성자만 수정할 수 있습니다."),
 	DELETE_POST_NOT_WRITER(HttpStatus.FORBIDDEN, "BOARD406", "게시글 작성자만 삭제할 수 있습니다."),
 	// 댓글 내용이 비어있을 경우
-	CREATE_COMMENT_CONTENT_EMPTY(HttpStatus.BAD_REQUEST, "BOARD407", "댓글 내용이 비어있습니다.");
+	CREATE_COMMENT_CONTENT_EMPTY(HttpStatus.BAD_REQUEST, "BOARD407", "댓글 내용이 비어있습니다."),
+	// 댓글의 작성자의 소모임 소속 여부가 비어있을 경우
+	CREATE_COMMENT_IS_IN_CREW_EMPTY(HttpStatus.BAD_REQUEST, "BOARD408",
+		"댓글의 작성자의 소모임 소속 여부가 비어있습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String status;

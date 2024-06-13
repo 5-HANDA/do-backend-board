@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class CommentUploadRequestDto {
 
 	private String content;
-	//private Boolean isInCrew;
+	private Boolean isInCrew;
 
 	// Vo 객체를 Dto 객체로 변환
 	public static CommentUploadRequestDto commentUploadVoToDto(
@@ -21,7 +21,7 @@ public class CommentUploadRequestDto {
 
 		return CommentUploadRequestDto.builder()
 			.content(commentUploadRequestVo.getContent())
-			//.isInCrew(commentUploadRequestVo.isInCrew())
+			.isInCrew(commentUploadRequestVo.getIsInCrew())
 			.build();
 	}
 }
