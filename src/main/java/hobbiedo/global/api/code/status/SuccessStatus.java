@@ -21,7 +21,9 @@ public enum SuccessStatus implements BaseCode {
 	// 게시글 수정 성공
 	UPDATE_POST_SUCCESS(HttpStatus.OK, "200", "게시글 수정을 성공하였습니다."),
 	// 게시글 삭제 성공
-	DELETE_POST_SUCCESS(HttpStatus.OK, "200", "게시글 삭제를 성공하였습니다.");
+	DELETE_POST_SUCCESS(HttpStatus.OK, "200", "게시글 삭제를 성공하였습니다."),
+	// 게시글 댓글 생성 성공
+	CREATE_COMMENT_SUCCESS(HttpStatus.OK, "200", "게시글 댓글 생성을 성공하였습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String status;

@@ -20,6 +20,7 @@ import hobbiedo.board.dto.response.BoardListResponseDto;
 import hobbiedo.board.dto.response.BoardResponseDto;
 import hobbiedo.board.infrastructure.BoardImageRepository;
 import hobbiedo.board.infrastructure.BoardRepository;
+import hobbiedo.board.infrastructure.CommentRepository;
 import hobbiedo.global.api.exception.handler.BoardExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ public class BoardServiceImpl implements BoardService {
 
 	private final BoardRepository boardRepository;
 	private final BoardImageRepository boardImageRepository;
+	private final CommentRepository commentRepository;
 
 	/**
 	 * 게시글 생성
@@ -195,6 +197,9 @@ public class BoardServiceImpl implements BoardService {
 
 		// 게시글에 속한 이미지 삭제
 		boardImageRepository.deleteByBoardId(boardId);
+
+		// 게시글 댓글 삭제
+		commentRepository.deleteByBoardId(boardId);
 
 		// 게시글 삭제
 		boardRepository.deleteById(boardId);

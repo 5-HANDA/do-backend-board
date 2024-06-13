@@ -30,13 +30,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/users/crew")
+@RequestMapping("/v1/users/crew/board")
 @Tag(name = "Board", description = "소모임 게시판 서비스")
 public class BoardController {
 
 	private final BoardService boardService;
 
-	@PostMapping("/board/{crewId}")
+	@PostMapping("/{crewId}")
 	@Operation(summary = "게시글 생성", description = "게시글을 생성합니다.")
 	public ApiResponse<Void> createPost(
 		@PathVariable("crewId") Long crewId,
@@ -53,7 +53,7 @@ public class BoardController {
 		);
 	}
 
-	@GetMapping("/board/{crewId}/board-list")
+	@GetMapping("/{crewId}/board-list")
 	@Operation(summary = "게시글 목록 조회", description = "해당 소모임의 게시글 목록을 조회합니다.")
 	public ApiResponse<BoardListResponseVo> getPostList(
 		@PathVariable("crewId") Long crewId,
@@ -67,7 +67,7 @@ public class BoardController {
 		);
 	}
 
-	@GetMapping("/board/{boardId}")
+	@GetMapping("/{boardId}")
 	@Operation(summary = "게시글 조회", description = "게시글을 조회합니다.")
 	public ApiResponse<BoardDetailsResponseVo> getPost(
 		@PathVariable("boardId") Long boardId) {
@@ -80,7 +80,7 @@ public class BoardController {
 		);
 	}
 
-	@PutMapping("/board/{boardId}")
+	@PutMapping("/{boardId}")
 	@Operation(summary = "게시글 수정", description = "작성자가 게시글을 수정합니다.")
 	public ApiResponse<Void> updatePost(
 		@PathVariable("boardId") Long boardId,
@@ -97,7 +97,7 @@ public class BoardController {
 		);
 	}
 
-	@DeleteMapping("/board/{boardId}")
+	@DeleteMapping("/{boardId}")
 	@Operation(summary = "게시글 삭제", description = "작성자가 게시글을 삭제합니다.")
 	public ApiResponse<Void> deletePost(
 		@PathVariable("boardId") Long boardId,
