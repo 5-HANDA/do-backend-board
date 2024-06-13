@@ -197,11 +197,11 @@ public class BoardServiceImpl implements BoardService {
 			throw new BoardExceptionHandler(DELETE_POST_NOT_WRITER);
 		}
 
-		// 게시글에 속한 이미지 삭제
-		boardImageRepository.deleteByBoardId(boardId);
-
-		// 게시글 댓글 삭제
-		commentRepository.deleteByBoardId(boardId);
+		// // 게시글에 속한 이미지 삭제
+		// boardImageRepository.deleteByBoardId(boardId);
+		//
+		// // 게시글 댓글 삭제
+		// commentRepository.deleteByBoardId(boardId);
 
 		// 게시글 삭제
 		boardRepository.deleteById(boardId);

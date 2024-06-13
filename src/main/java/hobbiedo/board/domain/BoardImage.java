@@ -1,5 +1,8 @@
 package hobbiedo.board.domain;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import hobbiedo.global.base.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,6 +27,7 @@ public class BoardImage extends BaseEntity {
 
 	// 게시글 id
 	@ManyToOne(fetch = FetchType.LAZY)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Board board;
 
 	// 이미지 url
