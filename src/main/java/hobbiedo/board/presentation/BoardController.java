@@ -35,7 +35,7 @@ public class BoardController {
 
 	private final BoardService boardService;
 
-	@PostMapping("/{crewId}/board/create-post")
+	@PostMapping("/board/{crewId}/board/create-post")
 	@Operation(summary = "게시글 생성", description = "게시글을 생성합니다.")
 	public ApiResponse<Void> createPost(
 		@PathVariable("crewId") Long crewId,
@@ -52,7 +52,7 @@ public class BoardController {
 		);
 	}
 
-	@GetMapping("{crewId}/board-list")
+	@GetMapping("/board{crewId}/board-list")
 	@Operation(summary = "게시글 목록 조회", description = "해당 소모임의 게시글 목록을 조회합니다.")
 	public ApiResponse<BoardListResponseVo> getPostList(
 		@PathVariable("crewId") Long crewId) {
@@ -65,7 +65,7 @@ public class BoardController {
 		);
 	}
 
-	@GetMapping("/board/{boardId}")
+	@GetMapping("/board/{boardId}/get-post")
 	@Operation(summary = "게시글 조회", description = "게시글을 조회합니다.")
 	public ApiResponse<BoardDetailsResponseVo> getPost(
 		@PathVariable("boardId") Long boardId) {
