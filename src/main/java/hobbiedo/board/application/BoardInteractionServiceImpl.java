@@ -78,8 +78,14 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 	@Override
 	public CommentListResponseDto getCommentList(Long boardId, Pageable page) {
 
+		// 게시글이 존재하는지 확인
+		boardRepository.findById(boardId)
+			.orElseThrow(() -> new BoardExceptionHandler(GET_POST_NOT_FOUND));
+
+		// 게시글에 속한 댓글 리스트 조회
 		Page<Comment> comments = commentRepository.findByBoardId(boardId, page);
 
+		// 댓글 리스트가 비어있어도 예외 처리하지 않음
 		List<CommentResponseDto> commentResponseDtoList = comments.stream()
 			.sorted(Comparator.comparing(Comment::getCreatedAt)
 				.reversed()) // 최신순 정렬

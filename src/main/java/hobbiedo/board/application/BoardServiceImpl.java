@@ -119,8 +119,10 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public BoardListResponseDto getPostList(Long crewId, Pageable page) {
 
+		// 소모임에 속한 게시글 리스트 조회
 		Page<Board> boards = boardRepository.findByCrewId(crewId, page);
 
+		// 게시글 리스트가 비어있어도 예외 처리하지 않음
 		List<BoardResponseDto> boardResponseDtoList = boards.stream()
 			.filter(board -> !board.isPinned()) // pinned 가 false 인 게시글만 포함
 			.sorted(Comparator.comparing(Board::getCreatedAt)
