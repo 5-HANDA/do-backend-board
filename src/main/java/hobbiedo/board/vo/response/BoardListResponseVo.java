@@ -24,7 +24,7 @@ public class BoardListResponseVo {
 	public static BoardListResponseVo boardListToVo(BoardListResponseDto boardListDto) {
 
 		return new BoardListResponseVo(
-			boardListDto.getIsNext(),
+			boardListDto.getIsLast(),
 			boardListDto.getBoardResponseDtoList()
 		);
 	}

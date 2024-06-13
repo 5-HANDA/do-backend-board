@@ -13,14 +13,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BoardListResponseDto {
 
-	private Boolean isNext;
+	private Boolean isLast;
 	private List<BoardResponseDto> boardResponseDtoList;
 
-	public static BoardListResponseDto boardDtoToBoardListResponseDto(Boolean isNext,
+	public static BoardListResponseDto boardDtoToBoardListResponseDto(Boolean isLast,
 		List<BoardResponseDto> boardResponseDtoList) {
 
 		return BoardListResponseDto.builder()
-			.isNext(isNext)
+			.isLast(isLast)
 			.boardResponseDtoList(boardResponseDtoList)
 			.build();
 	}

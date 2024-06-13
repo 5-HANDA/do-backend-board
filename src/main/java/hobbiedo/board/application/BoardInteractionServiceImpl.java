@@ -2,12 +2,20 @@ package hobbiedo.board.application;
 
 import static hobbiedo.global.api.code.status.ErrorStatus.*;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import hobbiedo.board.domain.Board;
 import hobbiedo.board.domain.Comment;
 import hobbiedo.board.dto.request.CommentUploadRequestDto;
+import hobbiedo.board.dto.response.CommentListResponseDto;
+import hobbiedo.board.dto.response.CommentResponseDto;
 import hobbiedo.board.infrastructure.BoardRepository;
 import hobbiedo.board.infrastructure.CommentRepository;
 import hobbiedo.global.api.exception.handler.BoardExceptionHandler;
@@ -59,5 +67,32 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 			.build();
 
 		commentRepository.save(comment);
+	}
+
+	/**
+	 * 댓글 리스트 조회
+	 * @param boardId
+	 * @param page
+	 * @return
+	 */
+	@Override
+	public CommentListResponseDto getCommentList(Long boardId, Pageable page) {
+
+		Page<Comment> comments = commentRepository.findByBoardId(boardId, page);
+
+		List<CommentResponseDto> commentResponseDtoList = comments.stream()
+			.sorted(Comparator.comparing(Comment::getCreatedAt)
+				.reversed()) // 최신순 정렬
+			.map(comment -> CommentResponseDto.builder()
+				.commentId(comment.getId())
+				.writerUuid(comment.getWriterUuid())
+				.content(comment.getContent())
+				.isInCrew(comment.getIsInCrew())
+				.createdAt(comment.getCreatedAt())
+				.build())
+			.collect(Collectors.toList());
+
+		return CommentListResponseDto.commentDtoToCommentListResponseDto(comments.isLast(),
+			commentResponseDtoList);
 	}
 }
