@@ -12,5 +12,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
 	Page<Comment> findByBoardId(Long boardId, Pageable pageable);
 
+	// 특정 게시글의 댓글을 모두 삭제
 	void deleteByBoardId(Long boardId);
 }

@@ -10,4 +10,6 @@ public interface BoardInteractionService {
 	void createComment(Long boardId, String uuid, CommentUploadRequestDto commentUploadRequestDto);
 
 	CommentListResponseDto getCommentList(Long boardId, Pageable page);
+
+	void deleteComment(Long commentId, String uuid);
 }

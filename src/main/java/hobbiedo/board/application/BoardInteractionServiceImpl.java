@@ -101,4 +101,26 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 		return CommentListResponseDto.commentDtoToCommentListResponseDto(comments.isLast(),
 			commentResponseDtoList);
 	}
+
+	/**
+	 * 댓글 삭제
+	 * @param commentId
+	 * @param uuid
+	 */
+	@Override
+	@Transactional
+	public void deleteComment(Long commentId, String uuid) {
+
+		// 댓글이 존재하는지 확인
+		Comment comment = commentRepository.findById(commentId)
+			.orElseThrow(() -> new BoardExceptionHandler(GET_COMMENT_NOT_FOUND));
+
+		// 댓글 작성자와 요청자가 다를 경우 예외 처리
+		if (!comment.getWriterUuid().equals(uuid)) {
+
+			throw new BoardExceptionHandler(DELETE_COMMENT_NOT_WRITER);
+		}
+
+		commentRepository.deleteById(commentId);
+	}
 }

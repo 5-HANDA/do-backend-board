@@ -3,6 +3,7 @@ package hobbiedo.board.presentation;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,7 +52,7 @@ public class BoardInteractionController {
 	}
 
 	// 게시글 댓글 리스트 조회
-	@GetMapping("/{boardId}/comment")
+	@GetMapping("/{boardId}/comment-list")
 	@Operation(summary = "게시글 댓글 조회", description = "게시글에 등록된 댓글들을 조회합니다.")
 	public ApiResponse<CommentListResponseVo> getCommentList(
 		@PathVariable("boardId") Long boardId,
@@ -63,6 +64,20 @@ public class BoardInteractionController {
 		return ApiResponse.onSuccess(
 			SuccessStatus.GET_COMMENT_LIST_SUCCESS,
 			CommentListResponseVo.commentListToVo(commentListResponseDto)
+		);
+	}
+
+	// 게시글 댓글 삭제
+	@DeleteMapping("{commentId}")
+	@Operation(summary = "게시글 댓글 삭제", description = "게시글에 등록된 댓글을 작성한 사용자가 삭제합니다.")
+	public ApiResponse<Void> deleteComment(
+		@PathVariable("commentId") Long commentId,
+		@RequestHeader(name = "Uuid") String uuid) {
+
+		boardInteractionService.deleteComment(commentId, uuid);
+
+		return ApiResponse.onSuccess(
+			SuccessStatus.DELETE_COMMENT_SUCCESS
 		);
 	}
 }
