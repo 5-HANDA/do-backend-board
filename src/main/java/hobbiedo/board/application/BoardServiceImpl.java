@@ -4,8 +4,11 @@ import static hobbiedo.global.api.code.status.ErrorStatus.*;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +16,7 @@ import hobbiedo.board.domain.Board;
 import hobbiedo.board.domain.BoardImage;
 import hobbiedo.board.dto.request.BoardUploadRequestDto;
 import hobbiedo.board.dto.response.BoardDetailsResponseDto;
+import hobbiedo.board.dto.response.BoardListResponseDto;
 import hobbiedo.board.dto.response.BoardResponseDto;
 import hobbiedo.board.infrastructure.BoardImageRepository;
 import hobbiedo.board.infrastructure.BoardRepository;
@@ -111,11 +115,11 @@ public class BoardServiceImpl implements BoardService {
 	 * @return
 	 */
 	@Override
-	public List<BoardResponseDto> getPostList(Long crewId) {
+	public BoardListResponseDto getPostList(Long crewId, Pageable page) {
 
-		List<Board> boards = boardRepository.findByCrewId(crewId);
+		Page<Board> boards = boardRepository.findByCrewId(crewId, page);
 
-		return boards.stream()
+		List<BoardResponseDto> boardResponseDtoList = boards.stream()
 			.filter(board -> !board.isPinned()) // pinned 가 false 인 게시글만 포함
 			.sorted(Comparator.comparing(Board::getCreatedAt)
 				.reversed()) // 최신순으로 정렬
@@ -123,7 +127,10 @@ public class BoardServiceImpl implements BoardService {
 				.boardId(board.getId())
 				.pinned(board.isPinned())
 				.build())
-			.toList();
+			.collect(Collectors.toList());
+
+		return BoardListResponseDto.boardDtoToBoardListResponseDto(boards.isLast(),
+			boardResponseDtoList);
 	}
 
 	/**

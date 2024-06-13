@@ -1,7 +1,8 @@
 package hobbiedo.board.presentation;
 
-import java.util.List;
-
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import hobbiedo.board.application.BoardService;
 import hobbiedo.board.dto.request.BoardUploadRequestDto;
 import hobbiedo.board.dto.response.BoardDetailsResponseDto;
-import hobbiedo.board.dto.response.BoardResponseDto;
+import hobbiedo.board.dto.response.BoardListResponseDto;
 import hobbiedo.board.vo.request.BoardUploadRequestVo;
 import hobbiedo.board.vo.response.BoardDetailsResponseVo;
 import hobbiedo.board.vo.response.BoardListResponseVo;
@@ -35,7 +36,7 @@ public class BoardController {
 
 	private final BoardService boardService;
 
-	@PostMapping("/board/{crewId}/board/create-post")
+	@PostMapping("/board/{crewId}")
 	@Operation(summary = "게시글 생성", description = "게시글을 생성합니다.")
 	public ApiResponse<Void> createPost(
 		@PathVariable("crewId") Long crewId,
@@ -52,12 +53,13 @@ public class BoardController {
 		);
 	}
 
-	@GetMapping("/board{crewId}/board-list")
+	@GetMapping("/board/{crewId}/board-list")
 	@Operation(summary = "게시글 목록 조회", description = "해당 소모임의 게시글 목록을 조회합니다.")
 	public ApiResponse<BoardListResponseVo> getPostList(
-		@PathVariable("crewId") Long crewId) {
+		@PathVariable("crewId") Long crewId,
+		@PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable page) {
 
-		List<BoardResponseDto> boardListResponseDto = boardService.getPostList(crewId);
+		BoardListResponseDto boardListResponseDto = boardService.getPostList(crewId, page);
 
 		return ApiResponse.onSuccess(
 			SuccessStatus.GET_POST_LIST_SUCCESS,
@@ -65,7 +67,7 @@ public class BoardController {
 		);
 	}
 
-	@GetMapping("/board/{boardId}/get-post")
+	@GetMapping("/board/{boardId}")
 	@Operation(summary = "게시글 조회", description = "게시글을 조회합니다.")
 	public ApiResponse<BoardDetailsResponseVo> getPost(
 		@PathVariable("boardId") Long boardId) {
@@ -78,7 +80,7 @@ public class BoardController {
 		);
 	}
 
-	@PutMapping("/board/{boardId}/update-post")
+	@PutMapping("/board/{boardId}")
 	@Operation(summary = "게시글 수정", description = "작성자가 게시글을 수정합니다.")
 	public ApiResponse<Void> updatePost(
 		@PathVariable("boardId") Long boardId,
@@ -95,7 +97,7 @@ public class BoardController {
 		);
 	}
 
-	@DeleteMapping("/board/{boardId}/delete-post")
+	@DeleteMapping("/board/{boardId}")
 	@Operation(summary = "게시글 삭제", description = "작성자가 게시글을 삭제합니다.")
 	public ApiResponse<Void> deletePost(
 		@PathVariable("boardId") Long boardId,
