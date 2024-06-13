@@ -9,9 +9,14 @@ import hobbiedo.board.dto.response.BoardResponseDto;
 public interface BoardService {
 
 	void createPostWithImages(Long crewId, String uuid,
-			BoardUploadRequestDto boardUploadRequestDto);
+		BoardUploadRequestDto boardUploadRequestDto);
 
 	BoardDetailsResponseDto getPost(Long boardId);
 
 	List<BoardResponseDto> getPostList(Long crewId);
+
+	void updatePostWithImages(Long boardId, String uuid,
+		BoardUploadRequestDto boardUpdateRequestDto);
+
+	void deletePost(Long boardId, String uuid);
 }

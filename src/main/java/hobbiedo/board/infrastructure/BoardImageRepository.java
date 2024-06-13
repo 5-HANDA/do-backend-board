@@ -11,4 +11,6 @@ import hobbiedo.board.domain.BoardImage;
 public interface BoardImageRepository extends JpaRepository<BoardImage, Long> {
 
 	List<BoardImage> findByBoardId(Long boardId);
+
+	void deleteByBoardId(Long boardId);
 }

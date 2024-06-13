@@ -47,12 +47,14 @@ public class Board extends BaseEntity {
 	private boolean isUpdated;
 
 	@Builder
-	public Board(String content, String writerUuid, Long crewId, boolean isPinned,
-			boolean isUpdated) {
+	public Board(Long id, String content, String writerUuid, Long crewId, boolean isPinned,
+		boolean isUpdated) {
+		this.id = id;
 		this.content = content;
 		this.writerUuid = writerUuid;
 		this.crewId = crewId;
 		this.isPinned = isPinned;
 		this.isUpdated = isUpdated;
 	}
+
 }

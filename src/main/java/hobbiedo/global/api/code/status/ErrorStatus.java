@@ -15,7 +15,9 @@ public enum ErrorStatus implements BaseErrorCode {
 
 	CREATE_POST_CONTENT_EMPTY(HttpStatus.BAD_REQUEST, "BOARD401", "게시글 내용이 비어있습니다."),
 	CREATE_POST_IMAGE_SIZE_EXCEED(HttpStatus.BAD_REQUEST, "BOARD402", "이미지 업로드는 최대 5개까지 가능합니다."),
-	GET_POST_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD403", "게시글을 찾을 수 없습니다.");
+	GET_POST_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD403", "게시글을 찾을 수 없습니다."),
+	UPDATE_POST_NOT_WRITER(HttpStatus.FORBIDDEN, "BOARD405", "게시글 작성자만 수정할 수 있습니다."),
+	DELETE_POST_NOT_WRITER(HttpStatus.FORBIDDEN, "BOARD406", "게시글 작성자만 삭제할 수 있습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String status;
@@ -32,19 +34,19 @@ public enum ErrorStatus implements BaseErrorCode {
 	@Override
 	public ErrorReasonDto getReason() {
 		return ErrorReasonDto
-				.builder()
-				.code(status)
-				.message(message)
-				.build();
+			.builder()
+			.code(status)
+			.message(message)
+			.build();
 	}
 
 	@Override
 	public ErrorReasonDto getReasonHttpStatus() {
 		return ErrorReasonDto
-				.builder()
-				.httpStatus(httpStatus)
-				.code(status)
-				.message(message)
-				.build();
+			.builder()
+			.httpStatus(httpStatus)
+			.code(status)
+			.message(message)
+			.build();
 	}
 }
