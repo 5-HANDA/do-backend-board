@@ -111,4 +111,18 @@ public class BoardInteractionController {
 			LikeStatusVo.likeStatusToVo(likeStatusDto)
 		);
 	}
+
+	// 게시글 좋아요 취소
+	@DeleteMapping("/{boardId}/like")
+	@Operation(summary = "게시글 좋아요 취소", description = "게시글에 좋아요를 취소합니다.")
+	public ApiResponse<Void> deleteLike(
+		@PathVariable("boardId") Long boardId,
+		@RequestHeader(name = "Uuid") String uuid) {
+
+		boardInteractionService.deleteLike(boardId, uuid);
+
+		return ApiResponse.onSuccess(
+			SuccessStatus.DELETE_LIKE_SUCCESS
+		);
+	}
 }

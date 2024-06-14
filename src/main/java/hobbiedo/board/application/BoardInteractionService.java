@@ -17,4 +17,6 @@ public interface BoardInteractionService {
 	void createLike(Long boardId, String uuid);
 
 	LikeStatusDto getLikeStatus(Long boardId, String uuid);
+
+	void deleteLike(Long boardId, String uuid);
 }

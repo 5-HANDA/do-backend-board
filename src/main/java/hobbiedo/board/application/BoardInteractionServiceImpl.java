@@ -176,4 +176,24 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 			.userUuid(uuid)
 			.build();
 	}
+
+	/**
+	 * 좋아요 취소
+	 * @param boardId
+	 * @param uuid
+	 */
+	@Override
+	@Transactional
+	public void deleteLike(Long boardId, String uuid) {
+
+		// 게시글이 존재하는지 확인
+		boardRepository.findById(boardId)
+			.orElseThrow(() -> new BoardExceptionHandler(GET_POST_NOT_FOUND));
+
+		// 좋아요가 존재하는지 확인, 존재하지 않을 경우 예외 처리
+		Likes likes = likesRepository.findByBoardIdAndUserUuid(boardId, uuid)
+			.orElseThrow(() -> new BoardExceptionHandler(DELETE_LIKE_NOT_EXIST));
+
+		likesRepository.delete(likes);
+	}
 }
