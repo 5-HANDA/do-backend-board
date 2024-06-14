@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BoardImage extends BaseEntity {
+public class Comment extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,18 +31,25 @@ public class BoardImage extends BaseEntity {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Board board;
 
-	// 이미지 url
-	@Column(nullable = false, length = 500)
-	private String imageUrl;
+	// 작성자 uuid
+	@Column(nullable = false, length = 255)
+	private String writerUuid;
 
-	// 이미지 순서
+	// 댓글 내용
+	@Column(nullable = false, length = 1500) // 댓글은 최대 500자
+	@Size(max = 501, message = "댓글 내용은 반드시 500자 이내여야 합니다")
+	private String content;
+
+	// 소모임 회원 여부
 	@Column(nullable = false)
-	private int orderIndex;
+	private Boolean isInCrew;
 
 	@Builder
-	public BoardImage(Board board, String imageUrl, int orderIndex) {
+	public Comment(Long id, Board board, String writerUuid, String content, boolean isInCrew) {
+		this.id = id;
 		this.board = board;
-		this.imageUrl = imageUrl;
-		this.orderIndex = orderIndex;
+		this.writerUuid = writerUuid;
+		this.content = content;
+		this.isInCrew = isInCrew;
 	}
 }

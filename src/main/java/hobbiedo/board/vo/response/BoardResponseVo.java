@@ -1,5 +1,7 @@
 package hobbiedo.board.vo.response;
 
+import java.util.List;
+
 import hobbiedo.board.dto.response.BoardResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -18,12 +20,13 @@ public class BoardResponseVo {
 		this.pinned = pinned;
 	}
 
-	public static BoardResponseVo boardToVo(BoardResponseDto boardDto) {
+	public static List<BoardResponseVo> boardDtoToBoardListResponseVo(
+		List<BoardResponseDto> boardResponseDtoList) {
 
-		return new BoardResponseVo(
-
-				boardDto.getBoardId(),
-				boardDto.isPinned()
-		);
+		return boardResponseDtoList.stream()
+			.map(boardResponseDto -> new BoardResponseVo(
+				boardResponseDto.getBoardId(),
+				boardResponseDto.isPinned()))
+			.toList();
 	}
 }

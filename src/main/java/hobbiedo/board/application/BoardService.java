@@ -1,10 +1,10 @@
 package hobbiedo.board.application;
 
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 import hobbiedo.board.dto.request.BoardUploadRequestDto;
 import hobbiedo.board.dto.response.BoardDetailsResponseDto;
-import hobbiedo.board.dto.response.BoardResponseDto;
+import hobbiedo.board.dto.response.BoardListResponseDto;
 
 public interface BoardService {
 
@@ -13,7 +13,7 @@ public interface BoardService {
 
 	BoardDetailsResponseDto getPost(Long boardId);
 
-	List<BoardResponseDto> getPostList(Long crewId);
+	BoardListResponseDto getPostList(Long crewId, Pageable page);
 
 	void updatePostWithImages(Long boardId, String uuid,
 		BoardUploadRequestDto boardUpdateRequestDto);
