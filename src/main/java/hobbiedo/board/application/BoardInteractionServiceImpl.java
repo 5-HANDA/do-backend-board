@@ -16,6 +16,7 @@ import hobbiedo.board.domain.Likes;
 import hobbiedo.board.dto.request.CommentUploadRequestDto;
 import hobbiedo.board.dto.response.CommentListResponseDto;
 import hobbiedo.board.dto.response.CommentResponseDto;
+import hobbiedo.board.dto.response.LikeStatusDto;
 import hobbiedo.board.infrastructure.BoardRepository;
 import hobbiedo.board.infrastructure.CommentRepository;
 import hobbiedo.board.infrastructure.LikesRepository;
@@ -151,5 +152,28 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 			.build();
 
 		likesRepository.save(likes);
+	}
+
+	/**
+	 * 좋아요 여부 조회
+	 * @param boardId
+	 * @param uuid
+	 * @return
+	 */
+	@Override
+	public LikeStatusDto getLikeStatus(Long boardId, String uuid) {
+
+		// 게시글이 존재하는지 확인
+		boardRepository.findById(boardId)
+			.orElseThrow(() -> new BoardExceptionHandler(GET_POST_NOT_FOUND));
+
+		// 좋아요가 존재하는지 확인
+		boolean isLike = likesRepository.findByBoardIdAndUserUuid(boardId, uuid).isPresent();
+
+		return LikeStatusDto.builder()
+			.boardId(boardId)
+			.liked(isLike)
+			.userUuid(uuid)
+			.build();
 	}
 }
