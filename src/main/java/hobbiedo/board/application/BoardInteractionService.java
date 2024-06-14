@@ -12,4 +12,6 @@ public interface BoardInteractionService {
 	CommentListResponseDto getCommentList(Long boardId, Pageable page);
 
 	void deleteComment(Long commentId, String uuid);
+
+	void createLike(Long boardId, String uuid);
 }

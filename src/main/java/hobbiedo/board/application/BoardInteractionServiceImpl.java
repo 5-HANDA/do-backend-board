@@ -12,11 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import hobbiedo.board.domain.Board;
 import hobbiedo.board.domain.Comment;
+import hobbiedo.board.domain.Likes;
 import hobbiedo.board.dto.request.CommentUploadRequestDto;
 import hobbiedo.board.dto.response.CommentListResponseDto;
 import hobbiedo.board.dto.response.CommentResponseDto;
 import hobbiedo.board.infrastructure.BoardRepository;
 import hobbiedo.board.infrastructure.CommentRepository;
+import hobbiedo.board.infrastructure.LikesRepository;
 import hobbiedo.global.api.exception.handler.BoardExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,7 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 
 	private final CommentRepository commentRepository;
 	private final BoardRepository boardRepository;
+	private final LikesRepository likesRepository;
 
 	/**
 	 * 댓글 생성
@@ -121,5 +124,32 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 		}
 
 		commentRepository.deleteById(commentId);
+	}
+
+	/**
+	 * 좋아요 생성
+	 * @param boardId
+	 * @param uuid
+	 */
+	@Override
+	@Transactional
+	public void createLike(Long boardId, String uuid) {
+
+		// 게시글이 존재하는지 확인
+		Board board = boardRepository.findById(boardId)
+			.orElseThrow(() -> new BoardExceptionHandler(GET_POST_NOT_FOUND));
+
+		// 좋아요가 이미 존재하는지 확인
+		if (likesRepository.findByBoardIdAndUserUuid(boardId, uuid).isPresent()) {
+			throw new BoardExceptionHandler(CREATE_LIKE_ALREADY_EXIST);
+		}
+
+		// 좋아요 생성
+		Likes likes = Likes.builder()
+			.board(board)
+			.userUuid(uuid)
+			.build();
+
+		likesRepository.save(likes);
 	}
 }

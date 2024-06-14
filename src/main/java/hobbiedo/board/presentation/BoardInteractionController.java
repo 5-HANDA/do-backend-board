@@ -80,4 +80,18 @@ public class BoardInteractionController {
 			SuccessStatus.DELETE_COMMENT_SUCCESS
 		);
 	}
+
+	// 게시글 좋아요 생성
+	@PostMapping("/{boardId}/like")
+	@Operation(summary = "게시글 좋아요 생성", description = "게시글에 좋아요를 눌러 좋아요를 생성합니다.")
+	public ApiResponse<Void> createLike(
+		@PathVariable("boardId") Long boardId,
+		@RequestHeader(name = "Uuid") String uuid) {
+
+		boardInteractionService.createLike(boardId, uuid);
+
+		return ApiResponse.onSuccess(
+			SuccessStatus.CREATE_LIKE_SUCCESS
+		);
+	}
 }
