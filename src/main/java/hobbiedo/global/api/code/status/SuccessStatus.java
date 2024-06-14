@@ -37,7 +37,9 @@ public enum SuccessStatus implements BaseCode {
 	// 게시글 고정 성공
 	PIN_POST_SUCCESS(HttpStatus.OK, "200", "게시글 고정을 성공하였습니다."),
 	// 게시글 고정 해제 성공
-	UNPIN_POST_SUCCESS(HttpStatus.OK, "200", "게시글 고정 해제를 성공하였습니다.");
+	UNPIN_POST_SUCCESS(HttpStatus.OK, "200", "게시글 고정 해제를 성공하였습니다."),
+	// 고정 게시글 조회 성공
+	GET_PINNED_POST_SUCCESS(HttpStatus.OK, "200", "고정 게시글 조회를 성공하였습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String status;

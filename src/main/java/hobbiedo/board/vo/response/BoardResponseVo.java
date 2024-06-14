@@ -20,6 +20,7 @@ public class BoardResponseVo {
 		this.pinned = pinned;
 	}
 
+	// 리스트 Dto -> 리스트 Vo
 	public static List<BoardResponseVo> boardDtoToBoardListResponseVo(
 		List<BoardResponseDto> boardResponseDtoList) {
 
@@ -28,5 +29,13 @@ public class BoardResponseVo {
 				boardResponseDto.getBoardId(),
 				boardResponseDto.isPinned()))
 			.toList();
+	}
+
+	// 단일 Dto -> 단일 Vo
+	public static BoardResponseVo boardDtoToBoardResponseVo(BoardResponseDto boardResponseDto) {
+		return new BoardResponseVo(
+			boardResponseDto.getBoardId(),
+			boardResponseDto.isPinned()
+		);
 	}
 }
