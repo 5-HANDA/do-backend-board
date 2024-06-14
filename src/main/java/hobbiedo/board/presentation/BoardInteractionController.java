@@ -125,4 +125,17 @@ public class BoardInteractionController {
 			SuccessStatus.DELETE_LIKE_SUCCESS
 		);
 	}
+
+	// 게시글 고정
+	@PostMapping("/{boardId}/pin")
+	@Operation(summary = "게시글 고정", description = "소모임장이 게시글을 고정합니다.")
+	public ApiResponse<Void> pinPost(
+		@PathVariable("boardId") Long boardId) {
+
+		boardInteractionService.pinPost(boardId);
+
+		return ApiResponse.onSuccess(
+			SuccessStatus.PIN_POST_SUCCESS
+		);
+	}
 }

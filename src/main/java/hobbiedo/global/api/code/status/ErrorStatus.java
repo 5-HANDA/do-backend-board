@@ -34,7 +34,9 @@ public enum ErrorStatus implements BaseErrorCode {
 	// 좋아요가 이미 존재할 경우
 	CREATE_LIKE_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "BOARD411", "이미 좋아요를 누른 게시글입니다."),
 	// 좋아요가 존재하지 않을 경우
-	DELETE_LIKE_NOT_EXIST(HttpStatus.NOT_FOUND, "BOARD412", "좋아요를 누르지 않은 게시글입니다.");
+	DELETE_LIKE_NOT_EXIST(HttpStatus.NOT_FOUND, "BOARD412", "좋아요를 누르지 않은 게시글입니다."),
+	// 이미 고정된 게시글일 경우
+	PIN_POST_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "BOARD413", "이미 고정된 게시글입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String status;

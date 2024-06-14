@@ -196,4 +196,36 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 
 		likesRepository.delete(likes);
 	}
+
+	/**
+	 * 게시글 고정
+	 * @param boardId
+	 */
+	@Override
+	@Transactional
+	public void pinPost(Long boardId) {
+
+		// 게시글이 존재하는지 확인
+		Board board = boardRepository.findById(boardId)
+			.orElseThrow(() -> new BoardExceptionHandler(GET_POST_NOT_FOUND));
+
+		// 게시글이 이미 고정되어 있는지 확인
+		if (board.isPinned()) {
+			throw new BoardExceptionHandler(PIN_POST_ALREADY_EXIST);
+		}
+
+		// 기존에 고정된 게시글이 있는지 확인
+
+		boardRepository.save(
+
+			Board.builder()
+				.id(board.getId())
+				.content(board.getContent())
+				.writerUuid(board.getWriterUuid())
+				.crewId(board.getCrewId())
+				.isPinned(true)
+				.isUpdated(board.isUpdated())
+				.build()
+		);
+	}
 }
