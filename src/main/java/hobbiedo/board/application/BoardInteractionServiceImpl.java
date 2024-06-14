@@ -12,11 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import hobbiedo.board.domain.Board;
 import hobbiedo.board.domain.Comment;
+import hobbiedo.board.domain.Likes;
 import hobbiedo.board.dto.request.CommentUploadRequestDto;
 import hobbiedo.board.dto.response.CommentListResponseDto;
 import hobbiedo.board.dto.response.CommentResponseDto;
+import hobbiedo.board.dto.response.LikeStatusDto;
 import hobbiedo.board.infrastructure.BoardRepository;
 import hobbiedo.board.infrastructure.CommentRepository;
+import hobbiedo.board.infrastructure.LikesRepository;
 import hobbiedo.global.api.exception.handler.BoardExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +32,7 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 
 	private final CommentRepository commentRepository;
 	private final BoardRepository boardRepository;
+	private final LikesRepository likesRepository;
 
 	/**
 	 * 댓글 생성
@@ -122,4 +126,153 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 
 		commentRepository.deleteById(commentId);
 	}
+
+	/**
+	 * 좋아요 생성
+	 * @param boardId
+	 * @param uuid
+	 */
+	@Override
+	@Transactional
+	public void createLike(Long boardId, String uuid) {
+
+		// 게시글이 존재하는지 확인
+		Board board = boardRepository.findById(boardId)
+			.orElseThrow(() -> new BoardExceptionHandler(GET_POST_NOT_FOUND));
+
+		// 좋아요가 이미 존재하는지 확인
+		if (likesRepository.findByBoardIdAndUserUuid(boardId, uuid).isPresent()) {
+			throw new BoardExceptionHandler(CREATE_LIKE_ALREADY_EXIST);
+		}
+
+		// 좋아요 생성
+		Likes likes = Likes.builder()
+			.board(board)
+			.userUuid(uuid)
+			.build();
+
+		likesRepository.save(likes);
+	}
+
+	/**
+	 * 좋아요 여부 조회
+	 * @param boardId
+	 * @param uuid
+	 * @return
+	 */
+	@Override
+	public LikeStatusDto getLikeStatus(Long boardId, String uuid) {
+
+		// 게시글이 존재하는지 확인
+		boardRepository.findById(boardId)
+			.orElseThrow(() -> new BoardExceptionHandler(GET_POST_NOT_FOUND));
+
+		// 좋아요가 존재하는지 확인
+		boolean isLike = likesRepository.findByBoardIdAndUserUuid(boardId, uuid).isPresent();
+
+		return LikeStatusDto.builder()
+			.boardId(boardId)
+			.liked(isLike)
+			.userUuid(uuid)
+			.build();
+	}
+
+	/**
+	 * 좋아요 취소
+	 * @param boardId
+	 * @param uuid
+	 */
+	@Override
+	@Transactional
+	public void deleteLike(Long boardId, String uuid) {
+
+		// 게시글이 존재하는지 확인
+		boardRepository.findById(boardId)
+			.orElseThrow(() -> new BoardExceptionHandler(GET_POST_NOT_FOUND));
+
+		// 좋아요가 존재하는지 확인, 존재하지 않을 경우 예외 처리
+		Likes likes = likesRepository.findByBoardIdAndUserUuid(boardId, uuid)
+			.orElseThrow(() -> new BoardExceptionHandler(DELETE_LIKE_NOT_EXIST));
+
+		likesRepository.delete(likes);
+	}
+
+	/**
+	 * 게시글 고정
+	 * @param boardId
+	 */
+	@Override
+	@Transactional
+	public void pinPost(Long boardId) {
+
+		// 게시글이 존재하는지 확인
+		Board board = boardRepository.findById(boardId)
+			.orElseThrow(() -> new BoardExceptionHandler(GET_POST_NOT_FOUND));
+
+		// 게시글이 이미 고정되어 있는지 확인
+		if (board.isPinned()) {
+			throw new BoardExceptionHandler(PIN_POST_ALREADY_EXIST);
+		}
+
+		// 기존에 고정된 게시글이 있는지 확인
+		Board pinnedBoard = boardRepository.findByIsPinnedTrueAndCrewId(board.getCrewId())
+			.orElse(null);
+
+		log.info("pinnedBoard {}", pinnedBoard);
+
+		// 기존에 고정된 게시글이 있는 경우 고정 해제하는 메서드 호출
+		if (pinnedBoard != null) {
+			unpinPostMethod(pinnedBoard);
+		}
+
+		boardRepository.save(
+
+			Board.builder()
+				.id(board.getId())
+				.content(board.getContent())
+				.writerUuid(board.getWriterUuid())
+				.crewId(board.getCrewId())
+				.isPinned(true)
+				.isUpdated(board.isUpdated())
+				.build()
+		);
+	}
+
+	/**
+	 * 게시글 고정 해제
+	 * @param boardId
+	 */
+	@Override
+	@Transactional
+	public void unpinPost(Long boardId) {
+
+		// 게시글이 존재하는지 확인
+		Board board = boardRepository.findById(boardId)
+			.orElseThrow(() -> new BoardExceptionHandler(GET_POST_NOT_FOUND));
+
+		// 게시글이 이미 고정해제 되어 있는지 확인
+		if (!board.isPinned()) {
+			throw new BoardExceptionHandler(UNPIN_POST_NOT_EXIST);
+		}
+
+		// 게시글 고정 해제하는 메서드 호출
+		unpinPostMethod(board);
+	}
+
+	// 게시글 고정 해제 메서드
+	private void unpinPostMethod(Board board) {
+
+		boardRepository.save(
+
+			Board.builder()
+				.id(board.getId())
+				.content(board.getContent())
+				.writerUuid(board.getWriterUuid())
+				.crewId(board.getCrewId())
+				.isPinned(false)
+				.isUpdated(board.isUpdated())
+				.build()
+		);
+	}
+
 }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import hobbiedo.board.dto.request.BoardUploadRequestDto;
 import hobbiedo.board.dto.response.BoardDetailsResponseDto;
 import hobbiedo.board.dto.response.BoardListResponseDto;
+import hobbiedo.board.dto.response.BoardResponseDto;
 
 public interface BoardService {
 
@@ -19,4 +20,6 @@ public interface BoardService {
 		BoardUploadRequestDto boardUpdateRequestDto);
 
 	void deletePost(Long boardId, String uuid);
+
+	BoardResponseDto getPinnedPost(Long crewId);
 }

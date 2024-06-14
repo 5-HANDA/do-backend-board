@@ -1,5 +1,7 @@
 package hobbiedo.board.infrastructure;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,4 +13,6 @@ import hobbiedo.board.domain.Board;
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
 	Page<Board> findByCrewId(Long crewId, Pageable pageable);
+
+	Optional<Board> findByIsPinnedTrueAndCrewId(Long crewId);
 }

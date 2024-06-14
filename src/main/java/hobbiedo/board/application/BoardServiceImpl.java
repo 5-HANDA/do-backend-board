@@ -206,6 +206,29 @@ public class BoardServiceImpl implements BoardService {
 		boardRepository.deleteById(boardId);
 	}
 
+	/**
+	 * 고정된 게시글 조회
+	 * @param crewId
+	 * @return
+	 */
+	@Override
+	public BoardResponseDto getPinnedPost(Long crewId) {
+
+		// 소모임에 속한 고정된 게시글 조회
+		Board board = boardRepository.findByIsPinnedTrueAndCrewId(crewId)
+			.orElse(null);
+
+		// 고정된 게시글이 없을 경우 null 반환
+		if (board == null) {
+			return null;
+		}
+
+		return BoardResponseDto.builder()
+			.boardId(board.getId())
+			.pinned(board.isPinned())
+			.build();
+	}
+
 	// 게시글 생성
 	private Board createPost(Long crewId, String uuid,
 		BoardUploadRequestDto boardUploadRequestDto) {

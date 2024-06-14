@@ -30,7 +30,15 @@ public enum ErrorStatus implements BaseErrorCode {
 	// 댓글이 존재하지 않을 경우
 	GET_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD409", "댓글을 찾을 수 없습니다."),
 	// 댓글의 작성자와 요청자가 다를 경우
-	DELETE_COMMENT_NOT_WRITER(HttpStatus.FORBIDDEN, "BOARD410", "댓글 작성자만 삭제할 수 있습니다.");
+	DELETE_COMMENT_NOT_WRITER(HttpStatus.FORBIDDEN, "BOARD410", "댓글 작성자만 삭제할 수 있습니다."),
+	// 좋아요가 이미 존재할 경우
+	CREATE_LIKE_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "BOARD411", "이미 좋아요를 누른 게시글입니다."),
+	// 좋아요가 존재하지 않을 경우
+	DELETE_LIKE_NOT_EXIST(HttpStatus.NOT_FOUND, "BOARD412", "좋아요를 누르지 않은 게시글입니다."),
+	// 이미 고정된 게시글일 경우
+	PIN_POST_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "BOARD413", "이미 고정된 게시글입니다."),
+	// 이미 고정이 해제된 게시글일 경우
+	UNPIN_POST_NOT_EXIST(HttpStatus.NOT_FOUND, "BOARD414", "고정이 해제된 게시글입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String status;

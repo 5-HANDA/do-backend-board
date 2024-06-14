@@ -23,14 +23,14 @@ public class BoardDetailsResponseVo {
 	private List<String> imageUrls;
 
 	public BoardDetailsResponseVo(Long boardId, String content, String writerUuid,
-			boolean pinned, LocalDateTime createdAt, boolean updated, List<String> imageUrls) {
+		boolean pinned, LocalDateTime createdAt, boolean updated, List<String> imageUrls) {
 		this.boardId = boardId;
 		this.content = content;
 		this.writerUuid = writerUuid;
 		this.pinned = pinned;
 
 		// 날짜, 시간 형식 지정
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy. MM. dd HH:mm");
 
 		this.createdAt = createdAt.format(formatter); // 작성일 (날짜, 시간 형식으로 변환)
 		this.updated = updated;
@@ -39,13 +39,13 @@ public class BoardDetailsResponseVo {
 
 	public static BoardDetailsResponseVo boardDtoToDetailsVo(BoardDetailsResponseDto boardDto) {
 		return new BoardDetailsResponseVo(
-				boardDto.getBoardId(),
-				boardDto.getContent(),
-				boardDto.getWriterUuid(),
-				boardDto.isPinned(),
-				boardDto.getCreatedAt(),
-				boardDto.isUpdated(),
-				boardDto.getImageUrls()
+			boardDto.getBoardId(),
+			boardDto.getContent(),
+			boardDto.getWriterUuid(),
+			boardDto.isPinned(),
+			boardDto.getCreatedAt(),
+			boardDto.isUpdated(),
+			boardDto.getImageUrls()
 		);
 	}
 }

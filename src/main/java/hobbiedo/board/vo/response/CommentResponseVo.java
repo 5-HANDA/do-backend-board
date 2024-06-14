@@ -28,7 +28,7 @@ public class CommentResponseVo {
 		this.isInCrew = isInCrew;
 
 		// 날짜, 시간 형식 지정
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy. MM. dd HH:mm");
 
 		this.createdAt = createdAt.format(formatter);
 	}

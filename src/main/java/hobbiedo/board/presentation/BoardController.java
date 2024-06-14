@@ -17,9 +17,11 @@ import hobbiedo.board.application.BoardService;
 import hobbiedo.board.dto.request.BoardUploadRequestDto;
 import hobbiedo.board.dto.response.BoardDetailsResponseDto;
 import hobbiedo.board.dto.response.BoardListResponseDto;
+import hobbiedo.board.dto.response.BoardResponseDto;
 import hobbiedo.board.vo.request.BoardUploadRequestVo;
 import hobbiedo.board.vo.response.BoardDetailsResponseVo;
 import hobbiedo.board.vo.response.BoardListResponseVo;
+import hobbiedo.board.vo.response.BoardResponseVo;
 import hobbiedo.global.api.ApiResponse;
 import hobbiedo.global.api.code.status.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,6 +38,7 @@ public class BoardController {
 
 	private final BoardService boardService;
 
+	// 게시글 생성
 	@PostMapping("/{crewId}")
 	@Operation(summary = "게시글 생성", description = "게시글을 생성합니다.")
 	public ApiResponse<Void> createPost(
@@ -53,6 +56,7 @@ public class BoardController {
 		);
 	}
 
+	// 게시글 목록 조회
 	@GetMapping("/{crewId}/board-list")
 	@Operation(summary = "게시글 목록 조회", description = "해당 소모임의 게시글 목록을 조회합니다.")
 	public ApiResponse<BoardListResponseVo> getPostList(
@@ -67,8 +71,9 @@ public class BoardController {
 		);
 	}
 
+	// 게시글 상세 조회
 	@GetMapping("/{boardId}")
-	@Operation(summary = "게시글 조회", description = "게시글을 조회합니다.")
+	@Operation(summary = "게시글 상세 조회", description = "게시글을 상세 조회합니다.")
 	public ApiResponse<BoardDetailsResponseVo> getPost(
 		@PathVariable("boardId") Long boardId) {
 
@@ -80,6 +85,7 @@ public class BoardController {
 		);
 	}
 
+	// 게시글 수정
 	@PutMapping("/{boardId}")
 	@Operation(summary = "게시글 수정", description = "작성자가 게시글을 수정합니다.")
 	public ApiResponse<Void> updatePost(
@@ -97,6 +103,7 @@ public class BoardController {
 		);
 	}
 
+	// 게시글 삭제
 	@DeleteMapping("/{boardId}")
 	@Operation(summary = "게시글 삭제", description = "작성자가 게시글을 삭제합니다.")
 	public ApiResponse<Void> deletePost(
@@ -107,6 +114,27 @@ public class BoardController {
 
 		return ApiResponse.onSuccess(
 			SuccessStatus.DELETE_POST_SUCCESS
+		);
+	}
+
+	// 고정 게시글 조회
+	@GetMapping("/{crewId}/pinned")
+	@Operation(summary = "고정 게시글 조회", description = "해당 소모임의 고정 게시글을 조회합니다.")
+	public ApiResponse<BoardResponseVo> getPinnedPost(
+		@PathVariable("crewId") Long crewId) {
+
+		BoardResponseDto boardResponseDto = boardService.getPinnedPost(crewId);
+
+		if (boardResponseDto == null) {
+			return ApiResponse.onSuccess(
+				SuccessStatus.GET_PINNED_POST_SUCCESS,
+				null
+			);
+		}
+
+		return ApiResponse.onSuccess(
+			SuccessStatus.GET_PINNED_POST_SUCCESS,
+			BoardResponseVo.boardDtoToBoardResponseVo(boardResponseDto)
 		);
 	}
 }

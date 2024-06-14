@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import hobbiedo.board.application.BoardInteractionService;
 import hobbiedo.board.dto.request.CommentUploadRequestDto;
 import hobbiedo.board.dto.response.CommentListResponseDto;
+import hobbiedo.board.dto.response.LikeStatusDto;
 import hobbiedo.board.vo.request.CommentUploadRequestVo;
 import hobbiedo.board.vo.response.CommentListResponseVo;
+import hobbiedo.board.vo.response.LikeStatusVo;
 import hobbiedo.global.api.ApiResponse;
 import hobbiedo.global.api.code.status.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -78,6 +80,75 @@ public class BoardInteractionController {
 
 		return ApiResponse.onSuccess(
 			SuccessStatus.DELETE_COMMENT_SUCCESS
+		);
+	}
+
+	// 게시글 좋아요 생성
+	@PostMapping("/{boardId}/like")
+	@Operation(summary = "게시글 좋아요 생성", description = "게시글에 좋아요를 눌러 좋아요를 생성합니다.")
+	public ApiResponse<Void> createLike(
+		@PathVariable("boardId") Long boardId,
+		@RequestHeader(name = "Uuid") String uuid) {
+
+		boardInteractionService.createLike(boardId, uuid);
+
+		return ApiResponse.onSuccess(
+			SuccessStatus.CREATE_LIKE_SUCCESS
+		);
+	}
+
+	// 게시글 좋아요 여부
+	@GetMapping("/{boardId}/like")
+	@Operation(summary = "게시글 좋아요 여부", description = "게시글에 좋아요를 눌렀는지 여부를 조회합니다.")
+	public ApiResponse<LikeStatusVo> getLikeStatus(
+		@PathVariable("boardId") Long boardId,
+		@RequestHeader(name = "Uuid") String uuid) {
+
+		LikeStatusDto likeStatusDto = boardInteractionService.getLikeStatus(boardId, uuid);
+
+		return ApiResponse.onSuccess(
+			SuccessStatus.GET_LIKE_STATUS_SUCCESS,
+			LikeStatusVo.likeStatusToVo(likeStatusDto)
+		);
+	}
+
+	// 게시글 좋아요 취소
+	@DeleteMapping("/{boardId}/like")
+	@Operation(summary = "게시글 좋아요 취소", description = "게시글에 좋아요를 취소합니다.")
+	public ApiResponse<Void> deleteLike(
+		@PathVariable("boardId") Long boardId,
+		@RequestHeader(name = "Uuid") String uuid) {
+
+		boardInteractionService.deleteLike(boardId, uuid);
+
+		return ApiResponse.onSuccess(
+			SuccessStatus.DELETE_LIKE_SUCCESS
+		);
+	}
+
+	// 게시글 고정
+	@PostMapping("/{boardId}/pin")
+	@Operation(summary = "게시글 고정", description = "소모임장이 게시글을 고정합니다.")
+	public ApiResponse<Void> pinPost(
+		@PathVariable("boardId") Long boardId) {
+
+		boardInteractionService.pinPost(boardId);
+
+		return ApiResponse.onSuccess(
+			SuccessStatus.PIN_POST_SUCCESS
+		);
+	}
+
+	// 게시글 고정 해제
+	@DeleteMapping("/{boardId}/pin")
+	@Operation(summary = "게시글 고정 해제", description = "소모임장이 게시글을 고정을 해제합니다.")
+	public ApiResponse<Void> unpinPost(
+		@PathVariable("boardId") Long boardId) {
+
+		boardInteractionService.unpinPost(boardId);
+
+		return ApiResponse.onSuccess(
+			SuccessStatus.UNPIN_POST_SUCCESS
 		);
 	}
 }

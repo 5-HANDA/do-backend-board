@@ -27,7 +27,19 @@ public enum SuccessStatus implements BaseCode {
 	// 게시글 댓글 리스트 조회 성공
 	GET_COMMENT_LIST_SUCCESS(HttpStatus.OK, "200", "게시글 댓글 리스트 조회를 성공하였습니다."),
 	// 게시글 댓글 삭제 성공
-	DELETE_COMMENT_SUCCESS(HttpStatus.OK, "200", "게시글 댓글 삭제를 성공하였습니다.");
+	DELETE_COMMENT_SUCCESS(HttpStatus.OK, "200", "게시글 댓글 삭제를 성공하였습니다."),
+	// 게시글 좋아요 생성 성공
+	CREATE_LIKE_SUCCESS(HttpStatus.OK, "200", "게시글 좋아요 생성을 성공하였습니다."),
+	// 게시글 좋아요 여부 조회 성공
+	GET_LIKE_STATUS_SUCCESS(HttpStatus.OK, "200", "게시글 좋아요 여부 조회를 성공하였습니다."),
+	// 게시글 좋아요 취소 성공
+	DELETE_LIKE_SUCCESS(HttpStatus.OK, "200", "게시글 좋아요 취소를 성공하였습니다."),
+	// 게시글 고정 성공
+	PIN_POST_SUCCESS(HttpStatus.OK, "200", "게시글 고정을 성공하였습니다."),
+	// 게시글 고정 해제 성공
+	UNPIN_POST_SUCCESS(HttpStatus.OK, "200", "게시글 고정 해제를 성공하였습니다."),
+	// 고정 게시글 조회 성공
+	GET_PINNED_POST_SUCCESS(HttpStatus.OK, "200", "고정 게시글 조회를 성공하였습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String status;
