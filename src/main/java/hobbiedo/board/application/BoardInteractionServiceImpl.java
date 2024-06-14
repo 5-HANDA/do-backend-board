@@ -215,6 +215,15 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 		}
 
 		// 기존에 고정된 게시글이 있는지 확인
+		Board pinnedBoard = boardRepository.findByIsPinnedTrueAndCrewId(board.getCrewId())
+			.orElse(null);
+
+		log.info("pinnedBoard {}", pinnedBoard);
+
+		// 기존에 고정된 게시글이 있는 경우 고정 해제하는 메서드 호출
+		if (pinnedBoard != null) {
+			unpinPostMethod(pinnedBoard);
+		}
 
 		boardRepository.save(
 
@@ -265,6 +274,5 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 				.build()
 		);
 	}
-
 
 }
