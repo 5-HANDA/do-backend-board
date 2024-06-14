@@ -4,7 +4,6 @@ import static hobbiedo.global.api.code.status.ErrorStatus.*;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -96,7 +95,7 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 				.isInCrew(comment.getIsInCrew())
 				.createdAt(comment.getCreatedAt())
 				.build())
-			.collect(Collectors.toList());
+			.toList();
 
 		return CommentListResponseDto.commentDtoToCommentListResponseDto(comments.isLast(),
 			commentResponseDtoList);

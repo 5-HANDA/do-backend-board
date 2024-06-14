@@ -4,7 +4,6 @@ import static hobbiedo.global.api.code.status.ErrorStatus.*;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.springframework.data.domain.Page;
@@ -131,7 +130,7 @@ public class BoardServiceImpl implements BoardService {
 				.boardId(board.getId())
 				.pinned(board.isPinned())
 				.build())
-			.collect(Collectors.toList());
+			.toList();
 
 		return BoardListResponseDto.boardDtoToBoardListResponseDto(boards.isLast(),
 			boardResponseDtoList);

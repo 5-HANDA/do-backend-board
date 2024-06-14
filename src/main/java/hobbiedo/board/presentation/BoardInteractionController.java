@@ -68,7 +68,7 @@ public class BoardInteractionController {
 	}
 
 	// 게시글 댓글 삭제
-	@DeleteMapping("{commentId}")
+	@DeleteMapping("/{commentId}")
 	@Operation(summary = "게시글 댓글 삭제", description = "게시글에 등록된 댓글을 작성한 사용자가 삭제합니다.")
 	public ApiResponse<Void> deleteComment(
 		@PathVariable("commentId") Long commentId,
