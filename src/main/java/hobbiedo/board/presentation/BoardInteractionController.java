@@ -138,4 +138,17 @@ public class BoardInteractionController {
 			SuccessStatus.PIN_POST_SUCCESS
 		);
 	}
+
+	// 게시글 고정 해제
+	@DeleteMapping("/{boardId}/pin")
+	@Operation(summary = "게시글 고정 해제", description = "소모임장이 게시글을 고정을 해제합니다.")
+	public ApiResponse<Void> unpinPost(
+		@PathVariable("boardId") Long boardId) {
+
+		boardInteractionService.unpinPost(boardId);
+
+		return ApiResponse.onSuccess(
+			SuccessStatus.UNPIN_POST_SUCCESS
+		);
+	}
 }

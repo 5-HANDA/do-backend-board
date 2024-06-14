@@ -21,4 +21,6 @@ public interface BoardInteractionService {
 	void deleteLike(Long boardId, String uuid);
 
 	void pinPost(Long boardId);
+
+	void unpinPost(Long boardId);
 }

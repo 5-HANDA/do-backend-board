@@ -228,4 +228,43 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 				.build()
 		);
 	}
+
+	/**
+	 * 게시글 고정 해제
+	 * @param boardId
+	 */
+	@Override
+	@Transactional
+	public void unpinPost(Long boardId) {
+
+		// 게시글이 존재하는지 확인
+		Board board = boardRepository.findById(boardId)
+			.orElseThrow(() -> new BoardExceptionHandler(GET_POST_NOT_FOUND));
+
+		// 게시글이 이미 고정해제 되어 있는지 확인
+		if (!board.isPinned()) {
+			throw new BoardExceptionHandler(UNPIN_POST_NOT_EXIST);
+		}
+
+		// 게시글 고정 해제하는 메서드 호출
+		unpinPostMethod(board);
+	}
+
+	// 게시글 고정 해제 메서드
+	private void unpinPostMethod(Board board) {
+
+		boardRepository.save(
+
+			Board.builder()
+				.id(board.getId())
+				.content(board.getContent())
+				.writerUuid(board.getWriterUuid())
+				.crewId(board.getCrewId())
+				.isPinned(false)
+				.isUpdated(board.isUpdated())
+				.build()
+		);
+	}
+
+
 }
