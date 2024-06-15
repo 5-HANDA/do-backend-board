@@ -21,6 +21,7 @@ import hobbiedo.board.infrastructure.BoardImageRepository;
 import hobbiedo.board.infrastructure.BoardRepository;
 import hobbiedo.board.kafka.application.KafkaProducerService;
 import hobbiedo.board.kafka.dto.BoardCreateEventDto;
+import hobbiedo.board.kafka.dto.BoardDeleteEventDto;
 import hobbiedo.global.api.exception.handler.BoardExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -211,6 +212,10 @@ public class BoardServiceImpl implements BoardService {
 
 		// 게시글 삭제
 		boardRepository.deleteById(boardId);
+
+		// kafka 메세지 전송
+		BoardDeleteEventDto eventDto = new BoardDeleteEventDto(boardId);
+		kafkaProducerService.sendDeleteTableMessage(eventDto);
 	}
 
 	/**
