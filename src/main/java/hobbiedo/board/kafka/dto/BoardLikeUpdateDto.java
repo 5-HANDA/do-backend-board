@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardDeleteEventDto {
+public class BoardLikeUpdateDto {
 
 	private Long boardId;
 }

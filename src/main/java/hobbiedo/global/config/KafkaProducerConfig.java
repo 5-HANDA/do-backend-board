@@ -31,7 +31,7 @@ public class KafkaProducerConfig {
 		configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 		configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 		configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-			JsonSerializer.class); // JsonSerializer for JSON
+			JsonSerializer.class); // JsonSerializer 사용함으로써 객체 JSON 으로 변환
 
 		return new DefaultKafkaProducerFactory<>(configProps);
 	}
