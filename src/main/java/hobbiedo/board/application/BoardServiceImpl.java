@@ -19,7 +19,9 @@ import hobbiedo.board.dto.response.BoardListResponseDto;
 import hobbiedo.board.dto.response.BoardResponseDto;
 import hobbiedo.board.infrastructure.BoardImageRepository;
 import hobbiedo.board.infrastructure.BoardRepository;
-import hobbiedo.board.infrastructure.CommentRepository;
+import hobbiedo.board.kafka.application.KafkaProducerService;
+import hobbiedo.board.kafka.dto.BoardCreateEventDto;
+import hobbiedo.board.kafka.dto.BoardDeleteEventDto;
 import hobbiedo.global.api.exception.handler.BoardExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +34,9 @@ public class BoardServiceImpl implements BoardService {
 
 	private final BoardRepository boardRepository;
 	private final BoardImageRepository boardImageRepository;
-	private final CommentRepository commentRepository;
+
+	// kafka producer service 추가
+	private final KafkaProducerService kafkaProducerService;
 
 	/**
 	 * 게시글 생성
@@ -72,6 +76,10 @@ public class BoardServiceImpl implements BoardService {
 					);
 				});
 		}
+
+		// kafka 메세지 전송
+		BoardCreateEventDto eventDto = new BoardCreateEventDto(createdBoard.getId());
+		kafkaProducerService.sendCreateTableMessage(eventDto);
 	}
 
 	/**`
@@ -204,6 +212,10 @@ public class BoardServiceImpl implements BoardService {
 
 		// 게시글 삭제
 		boardRepository.deleteById(boardId);
+
+		// kafka 메세지 전송
+		BoardDeleteEventDto eventDto = new BoardDeleteEventDto(boardId);
+		kafkaProducerService.sendDeleteTableMessage(eventDto);
 	}
 
 	/**
