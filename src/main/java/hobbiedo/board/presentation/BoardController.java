@@ -61,7 +61,7 @@ public class BoardController {
 	@Operation(summary = "게시글 목록 조회", description = "해당 소모임의 게시글 목록을 조회합니다.")
 	public ApiResponse<BoardListResponseVo> getPostList(
 		@PathVariable("crewId") Long crewId,
-		@PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable page) {
+		@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable page) {
 
 		BoardListResponseDto boardListResponseDto = boardService.getPostList(crewId, page);
 
