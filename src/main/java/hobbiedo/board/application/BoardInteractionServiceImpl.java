@@ -103,8 +103,7 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 
 		// 댓글 리스트가 비어있어도 예외 처리하지 않음
 		List<CommentResponseDto> commentResponseDtoList = comments.stream()
-			.sorted(Comparator.comparing(Comment::getCreatedAt)
-				.reversed()) // 최신순 정렬
+			.sorted(Comparator.comparing(Comment::getCreatedAt))
 			.map(comment -> CommentResponseDto.builder()
 				.commentId(comment.getId())
 				.writerUuid(comment.getWriterUuid())
