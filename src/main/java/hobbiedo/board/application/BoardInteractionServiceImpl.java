@@ -20,6 +20,9 @@ import hobbiedo.board.dto.response.LikeStatusDto;
 import hobbiedo.board.infrastructure.BoardRepository;
 import hobbiedo.board.infrastructure.CommentRepository;
 import hobbiedo.board.infrastructure.LikesRepository;
+import hobbiedo.board.kafka.application.KafkaProducerService;
+import hobbiedo.board.kafka.dto.BoardCommentUpdateDto;
+import hobbiedo.board.kafka.dto.BoardLikeUpdateDto;
 import hobbiedo.global.api.exception.handler.BoardExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +36,9 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 	private final CommentRepository commentRepository;
 	private final BoardRepository boardRepository;
 	private final LikesRepository likesRepository;
+
+	// kafka producer service 추가
+	private final KafkaProducerService kafkaProducerService;
 
 	/**
 	 * 댓글 생성
@@ -70,6 +76,13 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 			.build();
 
 		commentRepository.save(comment);
+
+		// 댓글 생성 시 통계 테이블에 댓글 수 증가 이벤트 메시지 전송
+		BoardCommentUpdateDto eventDto = BoardCommentUpdateDto.builder()
+			.boardId(boardId)
+			.build();
+
+		kafkaProducerService.sendUpdateCommentCountMessage(eventDto);
 	}
 
 	/**
@@ -90,8 +103,7 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 
 		// 댓글 리스트가 비어있어도 예외 처리하지 않음
 		List<CommentResponseDto> commentResponseDtoList = comments.stream()
-			.sorted(Comparator.comparing(Comment::getCreatedAt)
-				.reversed()) // 최신순 정렬
+			.sorted(Comparator.comparing(Comment::getCreatedAt))
 			.map(comment -> CommentResponseDto.builder()
 				.commentId(comment.getId())
 				.writerUuid(comment.getWriterUuid())
@@ -125,6 +137,13 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 		}
 
 		commentRepository.deleteById(commentId);
+
+		// 댓글 삭제 시 통계 테이블에 댓글 수 감소 이벤트 메시지 전송
+		BoardCommentUpdateDto eventDto = BoardCommentUpdateDto.builder()
+			.boardId(comment.getBoard().getId())
+			.build();
+
+		kafkaProducerService.sendDeleteCommentCountMessage(eventDto);
 	}
 
 	/**
@@ -152,6 +171,13 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 			.build();
 
 		likesRepository.save(likes);
+
+		// 좋아요 생성 시 통계 테이블에 좋아요 수 증가 이벤트 메시지 전송
+		BoardLikeUpdateDto eventDto = BoardLikeUpdateDto.builder()
+			.boardId(boardId)
+			.build();
+
+		kafkaProducerService.sendUpdateLikeCountMessage(eventDto);
 	}
 
 	/**
@@ -195,6 +221,13 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 			.orElseThrow(() -> new BoardExceptionHandler(DELETE_LIKE_NOT_EXIST));
 
 		likesRepository.delete(likes);
+
+		// 좋아요 삭제 시 통계 테이블에 좋아요 수 감소 이벤트 메시지 전송
+		BoardLikeUpdateDto eventDto = BoardLikeUpdateDto.builder()
+			.boardId(boardId)
+			.build();
+
+		kafkaProducerService.sendDeleteLikeCountMessage(eventDto);
 	}
 
 	/**

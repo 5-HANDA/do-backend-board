@@ -4,6 +4,7 @@ import static hobbiedo.global.api.code.status.ErrorStatus.*;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import org.springframework.data.domain.Page;
@@ -78,7 +79,10 @@ public class BoardServiceImpl implements BoardService {
 		}
 
 		// kafka 메세지 전송
-		BoardCreateEventDto eventDto = new BoardCreateEventDto(createdBoard.getId());
+		BoardCreateEventDto eventDto = BoardCreateEventDto.builder()
+			.boardId(createdBoard.getId())
+			.build();
+
 		kafkaProducerService.sendCreateTableMessage(eventDto);
 	}
 
@@ -214,7 +218,10 @@ public class BoardServiceImpl implements BoardService {
 		boardRepository.deleteById(boardId);
 
 		// kafka 메세지 전송
-		BoardDeleteEventDto eventDto = new BoardDeleteEventDto(boardId);
+		BoardDeleteEventDto eventDto = BoardDeleteEventDto.builder()
+			.boardId(boardId)
+			.build();
+
 		kafkaProducerService.sendDeleteTableMessage(eventDto);
 	}
 
@@ -227,13 +234,14 @@ public class BoardServiceImpl implements BoardService {
 	public BoardResponseDto getPinnedPost(Long crewId) {
 
 		// 소모임에 속한 고정된 게시글 조회
-		Board board = boardRepository.findByIsPinnedTrueAndCrewId(crewId)
-			.orElse(null);
+		Optional<Board> optionalBoard = boardRepository.findByIsPinnedTrueAndCrewId(crewId);
 
 		// 고정된 게시글이 없을 경우 null 반환
-		if (board == null) {
+		if (!optionalBoard.isPresent()) {
 			return null;
 		}
+
+		Board board = optionalBoard.get();
 
 		return BoardResponseDto.builder()
 			.boardId(board.getId())

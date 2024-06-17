@@ -58,7 +58,7 @@ public class BoardInteractionController {
 	@Operation(summary = "게시글 댓글 조회", description = "게시글에 등록된 댓글들을 조회합니다.")
 	public ApiResponse<CommentListResponseVo> getCommentList(
 		@PathVariable("boardId") Long boardId,
-		@PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable page) {
+		@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable page) {
 
 		CommentListResponseDto commentListResponseDto = boardInteractionService.getCommentList(
 			boardId, page);
