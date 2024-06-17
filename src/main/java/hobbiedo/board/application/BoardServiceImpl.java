@@ -78,7 +78,10 @@ public class BoardServiceImpl implements BoardService {
 		}
 
 		// kafka 메세지 전송
-		BoardCreateEventDto eventDto = new BoardCreateEventDto(createdBoard.getId());
+		BoardCreateEventDto eventDto = BoardCreateEventDto.builder()
+			.boardId(createdBoard.getId())
+			.build();
+
 		kafkaProducerService.sendCreateTableMessage(eventDto);
 	}
 
@@ -214,7 +217,10 @@ public class BoardServiceImpl implements BoardService {
 		boardRepository.deleteById(boardId);
 
 		// kafka 메세지 전송
-		BoardDeleteEventDto eventDto = new BoardDeleteEventDto(boardId);
+		BoardDeleteEventDto eventDto = BoardDeleteEventDto.builder()
+			.boardId(boardId)
+			.build();
+
 		kafkaProducerService.sendDeleteTableMessage(eventDto);
 	}
 
