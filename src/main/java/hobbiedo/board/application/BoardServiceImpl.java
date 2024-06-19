@@ -22,7 +22,9 @@ import hobbiedo.board.infrastructure.BoardImageRepository;
 import hobbiedo.board.infrastructure.BoardRepository;
 import hobbiedo.board.kafka.application.KafkaProducerService;
 import hobbiedo.board.kafka.dto.BoardCreateEventDto;
+import hobbiedo.board.kafka.dto.BoardCreateScoreDto;
 import hobbiedo.board.kafka.dto.BoardDeleteEventDto;
+import hobbiedo.board.kafka.dto.BoardDeleteScoreDto;
 import hobbiedo.global.api.exception.handler.BoardExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -84,6 +86,13 @@ public class BoardServiceImpl implements BoardService {
 			.build();
 
 		kafkaProducerService.sendCreateTableMessage(eventDto);
+
+		// kafka 메세지 전송, 소모임 점수 증가
+		BoardCreateScoreDto scoreDto = BoardCreateScoreDto.builder()
+			.crewId(crewId)
+			.build();
+
+		kafkaProducerService.sendIncreaseCrewScoreMessage(scoreDto);
 	}
 
 	/**`
@@ -223,6 +232,13 @@ public class BoardServiceImpl implements BoardService {
 			.build();
 
 		kafkaProducerService.sendDeleteTableMessage(eventDto);
+
+		// kafka 메세지 전송, 소모임 점수 감소
+		BoardDeleteScoreDto scoreDto = BoardDeleteScoreDto.builder()
+			.crewId(board.getCrewId())
+			.build();
+
+		kafkaProducerService.sendDecreaseCrewScoreMessage(scoreDto);
 	}
 
 	/**
