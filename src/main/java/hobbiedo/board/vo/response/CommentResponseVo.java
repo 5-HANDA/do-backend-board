@@ -1,7 +1,6 @@
 package hobbiedo.board.vo.response;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import hobbiedo.board.dto.response.CommentResponseDto;
@@ -18,7 +17,7 @@ public class CommentResponseVo {
 	private String writerUuid; // 작성자 uuid
 	private String content; // 댓글 내용
 	private Boolean isInCrew; // 소모임 회원 여부
-	private String createdAt; // 작성일
+	private LocalDateTime createdAt; // 작성일
 
 	public CommentResponseVo(Long commentId, String writerUuid, String content, Boolean isInCrew,
 		LocalDateTime createdAt) {
@@ -26,11 +25,7 @@ public class CommentResponseVo {
 		this.writerUuid = writerUuid;
 		this.content = content;
 		this.isInCrew = isInCrew;
-
-		// 날짜, 시간 형식 지정
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy. MM. dd HH:mm");
-
-		this.createdAt = createdAt.format(formatter);
+		this.createdAt = createdAt;
 	}
 
 	public static List<CommentResponseVo> commentDtoToCommentListResponseVo(

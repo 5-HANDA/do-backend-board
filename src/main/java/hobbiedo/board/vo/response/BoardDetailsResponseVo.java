@@ -1,7 +1,6 @@
 package hobbiedo.board.vo.response;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import hobbiedo.board.dto.response.BoardDetailsResponseDto;
@@ -18,7 +17,7 @@ public class BoardDetailsResponseVo {
 	private String content;
 	private String writerUuid;
 	private boolean pinned; // 고정 여부
-	private String createdAt; // 작성일
+	private LocalDateTime createdAt; // 작성일
 	private boolean updated; // 수정 여부
 	private List<String> imageUrls;
 
@@ -28,11 +27,7 @@ public class BoardDetailsResponseVo {
 		this.content = content;
 		this.writerUuid = writerUuid;
 		this.pinned = pinned;
-
-		// 날짜, 시간 형식 지정
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy. MM. dd HH:mm");
-
-		this.createdAt = createdAt.format(formatter); // 작성일 (날짜, 시간 형식으로 변환)
+		this.createdAt = createdAt; // 작성일 (날짜, 시간 형식으로 변환)
 		this.updated = updated;
 		this.imageUrls = imageUrls;
 	}
