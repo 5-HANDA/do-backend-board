@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BoardDeleteEventDto {
 
-	private Long boardId;
+	private Long boardId; // 게시글 번호
+	private Long crewId; // 크루 번호
 }

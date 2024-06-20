@@ -22,9 +22,8 @@ import hobbiedo.board.infrastructure.BoardImageRepository;
 import hobbiedo.board.infrastructure.BoardRepository;
 import hobbiedo.board.kafka.application.KafkaProducerService;
 import hobbiedo.board.kafka.dto.BoardCreateEventDto;
-import hobbiedo.board.kafka.dto.BoardCreateScoreDto;
 import hobbiedo.board.kafka.dto.BoardDeleteEventDto;
-import hobbiedo.board.kafka.dto.BoardDeleteScoreDto;
+import hobbiedo.board.kafka.dto.BoardUpdateEventDto;
 import hobbiedo.global.api.exception.handler.BoardExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -83,16 +82,16 @@ public class BoardServiceImpl implements BoardService {
 		// kafka 메세지 전송
 		BoardCreateEventDto eventDto = BoardCreateEventDto.builder()
 			.boardId(createdBoard.getId())
+			.crewId(createdBoard.getCrewId())
+			.content(createdBoard.getContent())
+			.writerUuid(createdBoard.getWriterUuid())
+			.pinned(createdBoard.isPinned())
+			.createdAt(createdBoard.getCreatedAt())
+			.updated(createdBoard.isUpdated())
+			.imageUrls(imageUrls)
 			.build();
 
 		kafkaProducerService.sendCreateTableMessage(eventDto);
-
-		// kafka 메세지 전송, 소모임 점수 증가
-		BoardCreateScoreDto scoreDto = BoardCreateScoreDto.builder()
-			.crewId(crewId)
-			.build();
-
-		kafkaProducerService.sendIncreaseCrewScoreMessage(scoreDto);
 	}
 
 	/**`
@@ -198,6 +197,20 @@ public class BoardServiceImpl implements BoardService {
 					);
 				});
 		}
+
+		// kafka 메세지 전송
+		BoardUpdateEventDto eventDto = BoardUpdateEventDto.builder()
+			.boardId(updateedBoard.getId())
+			.crewId(updateedBoard.getCrewId())
+			.content(updateedBoard.getContent())
+			.writerUuid(updateedBoard.getWriterUuid())
+			.pinned(updateedBoard.isPinned())
+			.createdAt(updateedBoard.getCreatedAt())
+			.updated(true)
+			.imageUrls(imageUrls)
+			.build();
+
+		kafkaProducerService.sendUpdateTableMessage(eventDto);
 	}
 
 	/**
@@ -229,16 +242,10 @@ public class BoardServiceImpl implements BoardService {
 		// kafka 메세지 전송
 		BoardDeleteEventDto eventDto = BoardDeleteEventDto.builder()
 			.boardId(boardId)
-			.build();
-
-		kafkaProducerService.sendDeleteTableMessage(eventDto);
-
-		// kafka 메세지 전송, 소모임 점수 감소
-		BoardDeleteScoreDto scoreDto = BoardDeleteScoreDto.builder()
 			.crewId(board.getCrewId())
 			.build();
 
-		kafkaProducerService.sendDecreaseCrewScoreMessage(scoreDto);
+		kafkaProducerService.sendDeleteTableMessage(eventDto);
 	}
 
 	/**
