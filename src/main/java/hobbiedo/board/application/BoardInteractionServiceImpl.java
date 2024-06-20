@@ -23,6 +23,8 @@ import hobbiedo.board.infrastructure.LikesRepository;
 import hobbiedo.board.kafka.application.KafkaProducerService;
 import hobbiedo.board.kafka.dto.BoardCommentUpdateDto;
 import hobbiedo.board.kafka.dto.BoardLikeUpdateDto;
+import hobbiedo.board.kafka.dto.BoardPinEventDto;
+import hobbiedo.board.kafka.dto.BoardUnPinEventDto;
 import hobbiedo.global.api.exception.handler.BoardExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -256,6 +258,13 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 		// 기존에 고정된 게시글이 있는 경우 고정 해제하는 메서드 호출
 		if (pinnedBoard != null) {
 			unpinPostMethod(pinnedBoard);
+
+			// 게시글의 고정 해제 이벤트 메시지 전송
+			BoardUnPinEventDto unpinEventDto = BoardUnPinEventDto.builder()
+				.boardId(pinnedBoard.getId())
+				.build();
+
+			kafkaProducerService.sendUnpinTableMessage(unpinEventDto);
 		}
 
 		boardRepository.save(
@@ -269,6 +278,13 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 				.isUpdated(board.isUpdated())
 				.build()
 		);
+
+		// 게시글의 고정 이벤트 메시지 전송
+		BoardPinEventDto eventDto = BoardPinEventDto.builder()
+			.boardId(boardId)
+			.build();
+
+		kafkaProducerService.sendPinTableMessage(eventDto);
 	}
 
 	/**
@@ -290,6 +306,13 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 
 		// 게시글 고정 해제하는 메서드 호출
 		unpinPostMethod(board);
+
+		// 게시글의 고정 해제 이벤트 메시지 전송
+		BoardUnPinEventDto unpinEventDto = BoardUnPinEventDto.builder()
+			.boardId(boardId)
+			.build();
+
+		kafkaProducerService.sendUnpinTableMessage(unpinEventDto);
 	}
 
 	// 게시글 고정 해제 메서드
