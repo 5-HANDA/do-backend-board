@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardCreateScoreDto {
+public class BoardPinEventDto {
 
-	private Long crewId;
+	private Long boardId;
 }
