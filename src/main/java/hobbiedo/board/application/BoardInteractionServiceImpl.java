@@ -21,6 +21,7 @@ import hobbiedo.board.infrastructure.BoardRepository;
 import hobbiedo.board.infrastructure.CommentRepository;
 import hobbiedo.board.infrastructure.LikesRepository;
 import hobbiedo.board.kafka.application.KafkaProducerService;
+import hobbiedo.board.kafka.dto.BoardCommentDeleteDto;
 import hobbiedo.board.kafka.dto.BoardCommentUpdateDto;
 import hobbiedo.board.kafka.dto.BoardLikeUpdateDto;
 import hobbiedo.board.kafka.dto.BoardPinEventDto;
@@ -82,6 +83,11 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 		// 댓글 생성 시 통계 테이블에 댓글 수 증가 이벤트 메시지 전송
 		BoardCommentUpdateDto eventDto = BoardCommentUpdateDto.builder()
 			.boardId(boardId)
+			.commentId(comment.getId())
+			.writerUuid(uuid)
+			.content(commentUploadRequestDto.getContent())
+			.isInCrew(commentUploadRequestDto.getIsInCrew())
+			.createdAt(comment.getCreatedAt())
 			.build();
 
 		kafkaProducerService.sendUpdateCommentCountMessage(eventDto);
@@ -141,8 +147,9 @@ public class BoardInteractionServiceImpl implements BoardInteractionService {
 		commentRepository.deleteById(commentId);
 
 		// 댓글 삭제 시 통계 테이블에 댓글 수 감소 이벤트 메시지 전송
-		BoardCommentUpdateDto eventDto = BoardCommentUpdateDto.builder()
+		BoardCommentDeleteDto eventDto = BoardCommentDeleteDto.builder()
 			.boardId(comment.getBoard().getId())
+			.commentId(commentId)
 			.build();
 
 		kafkaProducerService.sendDeleteCommentCountMessage(eventDto);

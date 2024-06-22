@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import hobbiedo.board.kafka.dto.BoardCommentDeleteDto;
 import hobbiedo.board.kafka.dto.BoardCommentUpdateDto;
 import hobbiedo.board.kafka.dto.BoardCreateEventDto;
 import hobbiedo.board.kafka.dto.BoardDeleteEventDto;
@@ -30,10 +31,10 @@ public class KafkaProducerService {
 	// 게시글 고정 해제 이벤트용 토픽
 	private static final String BOARD_UNPIN_TOPIC = "board-unpin-topic";
 
-	// 게시글 댓글 수 증가 이벤트용 토픽
+	// 게시글 댓글 작성 이벤트용 토픽
 	private static final String BOARD_COMMENT_UPDATE_TOPIC = "board-comment-update-topic";
 
-	// 게시글 댓글 수 감소 이벤트용 토픽
+	// 게시글 댓글 삭제 이벤트용 토픽
 	private static final String BOARD_COMMENT_DELETE_TOPIC = "board-comment-delete-topic";
 
 	// 게시글 좋아요 수 증가 이벤트용 토픽
@@ -100,7 +101,7 @@ public class KafkaProducerService {
 		}
 	}
 
-	// 게시글 댓글 수 업데이트 이벤트 메시지 전송
+	// 게시글 댓글 작성 이벤트 메시지 전송
 	public void sendUpdateCommentCountMessage(BoardCommentUpdateDto eventDto) {
 		try {
 
@@ -111,8 +112,8 @@ public class KafkaProducerService {
 		}
 	}
 
-	// 게시글 댓글 수 감소 이벤트 메시지 전송
-	public void sendDeleteCommentCountMessage(BoardCommentUpdateDto eventDto) {
+	// 게시글 댓글 삭제 이벤트 메시지 전송
+	public void sendDeleteCommentCountMessage(BoardCommentDeleteDto eventDto) {
 		try {
 
 			kafkaTemplate.send(BOARD_COMMENT_DELETE_TOPIC, eventDto);
