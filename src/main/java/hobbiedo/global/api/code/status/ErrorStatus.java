@@ -11,7 +11,34 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ErrorStatus implements BaseErrorCode {
 	VALID_EXCEPTION(HttpStatus.BAD_REQUEST, "GLOBAL400", "데이터베이스 유효성 에러"),
-	EXAMPLE_EXCEPTION(HttpStatus.BAD_REQUEST, "EXAMPLE400", "샘플 에러 메시지입니다");
+	EXAMPLE_EXCEPTION(HttpStatus.BAD_REQUEST, "EXAMPLE400", "샘플 에러 메시지입니다"),
+
+	// 게시글이 내용이 비어있을 경우
+	CREATE_POST_CONTENT_EMPTY(HttpStatus.BAD_REQUEST, "BOARD401", "게시글 내용이 비어있습니다."),
+	// 이미지 업로드가 5개를 초과할 경우
+	CREATE_POST_IMAGE_SIZE_EXCEED(HttpStatus.BAD_REQUEST, "BOARD402", "이미지 업로드는 최대 5개까지 가능합니다."),
+	// 게시글이 존재하지 않을 경우
+	GET_POST_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD403", "게시글을 찾을 수 없습니다."),
+	// 게시글의 작성자와 요청자가 다를 경우
+	UPDATE_POST_NOT_WRITER(HttpStatus.FORBIDDEN, "BOARD405", "게시글 작성자만 수정할 수 있습니다."),
+	DELETE_POST_NOT_WRITER(HttpStatus.FORBIDDEN, "BOARD406", "게시글 작성자만 삭제할 수 있습니다."),
+	// 댓글 내용이 비어있을 경우
+	CREATE_COMMENT_CONTENT_EMPTY(HttpStatus.BAD_REQUEST, "BOARD407", "댓글 내용이 비어있습니다."),
+	// 댓글의 작성자의 소모임 소속 여부가 비어있을 경우
+	CREATE_COMMENT_IS_IN_CREW_EMPTY(HttpStatus.BAD_REQUEST, "BOARD408",
+		"댓글의 작성자의 소모임 소속 여부가 비어있습니다."),
+	// 댓글이 존재하지 않을 경우
+	GET_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD409", "댓글을 찾을 수 없습니다."),
+	// 댓글의 작성자와 요청자가 다를 경우
+	DELETE_COMMENT_NOT_WRITER(HttpStatus.FORBIDDEN, "BOARD410", "댓글 작성자만 삭제할 수 있습니다."),
+	// 좋아요가 이미 존재할 경우
+	CREATE_LIKE_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "BOARD411", "이미 좋아요를 누른 게시글입니다."),
+	// 좋아요가 존재하지 않을 경우
+	DELETE_LIKE_NOT_EXIST(HttpStatus.NOT_FOUND, "BOARD412", "좋아요를 누르지 않은 게시글입니다."),
+	// 이미 고정된 게시글일 경우
+	PIN_POST_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "BOARD413", "이미 고정된 게시글입니다."),
+	// 이미 고정이 해제된 게시글일 경우
+	UNPIN_POST_NOT_EXIST(HttpStatus.NOT_FOUND, "BOARD414", "고정이 해제된 게시글입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String status;
